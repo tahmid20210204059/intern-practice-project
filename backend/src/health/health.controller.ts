@@ -1,6 +1,9 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
 
 @Controller('health')
 export class HealthController {
@@ -10,11 +13,15 @@ export class HealthController {
   check() {
     const dbState = this.connection.readyState;
     return {
-      success: true,
-      data: {
-        status: 'ok',
-        database: dbState === 1 ? 'connected' : 'disconnected',
-      },
+      status: 'ok',
+      database: dbState === 1 ? 'connected' : 'disconnected',
     };
+  }
+
+  @Get('admin-only')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  adminCheck() {
+    return { message: 'You are an admin' };
   }
 }
