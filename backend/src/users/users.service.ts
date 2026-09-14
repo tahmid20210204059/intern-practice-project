@@ -1,66 +1,228 @@
 import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import * as bcrypt from 'bcrypt';
 import { User } from './schemas/user.schema';
+import { NotificationsService } from '../notifications/notifications.service';
+import { getPasswordError, getLinksError, ALLOWED_LINK_KEYS } from '../common/validators';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<User>,
+    private notificationsService: NotificationsService,
+  ) {}
 
   findByEmail(email: string) {
     return this.userModel.findOne({ email });
   }
-  findById(id: string) {
-    return this.userModel.findById(id).select('-passwordHash');
+
+  async findById(id: string) {
+    if (!Types.ObjectId.isValid(id)) throw new BadRequestException('Invalid user ID');
+    const user = await this.userModel.findById(id).select('-passwordHash');
+    if (!user) throw new NotFoundException('User not found');
+    return user;
   }
+
   create(data: Partial<User>) {
     return this.userModel.create(data);
   }
+
   findAll() {
     return this.userModel.find().select('-passwordHash');
   }
 
   async updateRole(id: string, role: string) {
-    if (!Types.ObjectId.isValid(id)) {
-      throw new BadRequestException('Invalid user ID');
-    }
-
+    if (!Types.ObjectId.isValid(id)) throw new BadRequestException('Invalid user ID');
     const currentUser = await this.userModel.findById(id);
-    if (!currentUser) {
-      throw new NotFoundException('User not found');
-    }
+    if (!currentUser) throw new NotFoundException('User not found');
 
     if (role === 'admin' && currentUser.role !== 'admin') {
       const adminCount = await this.userModel.countDocuments({ role: 'admin' });
-      if (adminCount >= 2) {
-        throw new BadRequestException('Maximum of 2 admins allowed');
-      }
+      if (adminCount >= 2) throw new BadRequestException('Maximum of 2 admins allowed');
     }
-
     if (role === 'user' && currentUser.role === 'admin') {
       const adminCount = await this.userModel.countDocuments({ role: 'admin' });
-      if (adminCount <= 1) {
-        throw new BadRequestException('Cannot demote the last remaining admin');
-      }
+      if (adminCount <= 1) throw new BadRequestException('Cannot demote the last remaining admin');
     }
 
-    return this.userModel.findByIdAndUpdate(
-      id,
-      { role },
-      { new: true },
-    ).select('-passwordHash');
+    return this.userModel.findByIdAndUpdate(id, { role }, { new: true }).select('-passwordHash');
   }
 
-  updateOwnProfile(id: string, data: Partial<User>) {
-    const { name, skills, experiences } = data as any;
-    return this.userModel.findByIdAndUpdate(
-      id,
-      { name, skills, experiences },
-      { new: true, runValidators: true },
-    ).select('-passwordHash');
+  private buildProfileUpdate(data: { name?: string; bio?: string; avatarUrl?: string }) {
+    const update: Record<string, any> = {};
+
+    if (data.name !== undefined) {
+      if (!data.name.trim()) throw new BadRequestException('Name cannot be empty');
+      update.name = data.name.trim();
+    }
+
+    if (data.bio !== undefined) {
+      if (data.bio.length > 300) throw new BadRequestException('Bio must be 300 characters or fewer');
+      update.bio = data.bio;
+    }
+
+    if (data.avatarUrl !== undefined) {
+      if (data.avatarUrl) {
+        if (!data.avatarUrl.startsWith('data:image/')) {
+          throw new BadRequestException('Avatar must be a valid image');
+        }
+        const base64Part = data.avatarUrl.split(',')[1] || '';
+        const sizeInBytes = Math.ceil((base64Part.length * 3) / 4);
+        if (sizeInBytes > 2 * 1024 * 1024) {
+          throw new BadRequestException('Avatar image must be smaller than 2MB');
+        }
+      }
+      update.avatarUrl = data.avatarUrl;
+    }
+
+    return update;
+  }
+
+  private validateExperiences(experiences: any[]) {
+    if (!Array.isArray(experiences)) throw new BadRequestException('Experiences must be an array');
+    for (const exp of experiences) {
+      if (!exp.title || !exp.company) {
+        throw new BadRequestException('Each experience requires title and company');
+      }
+    }
+  }
+
+  private validateEducation(education: any[]) {
+    if (!Array.isArray(education)) throw new BadRequestException('Education must be an array');
+    for (const edu of education) {
+      if (!edu.degree || !edu.institute) {
+        throw new BadRequestException('Each education entry requires degree and institute');
+      }
+    }
+  }
+
+  async updateOwnProfile(id: string, data: { name?: string; bio?: string; avatarUrl?: string }) {
+    const update = this.buildProfileUpdate(data);
+    return this.userModel.findByIdAndUpdate(id, update, { new: true, runValidators: true }).select('-passwordHash');
+  }
+
+  async updateSkills(id: string, skills: string[]) {
+    if (!Array.isArray(skills) || !skills.every((s) => typeof s === 'string')) {
+      throw new BadRequestException('Skills must be an array of strings');
+    }
+    return this.userModel.findByIdAndUpdate(id, { skills }, { new: true, runValidators: true }).select('-passwordHash');
+  }
+
+  async updateExperiences(id: string, experiences: any[]) {
+    this.validateExperiences(experiences);
+    return this.userModel.findByIdAndUpdate(id, { experiences }, { new: true, runValidators: true }).select('-passwordHash');
+  }
+
+  async updateEducation(id: string, education: any[]) {
+    this.validateEducation(education);
+    return this.userModel.findByIdAndUpdate(id, { education }, { new: true, runValidators: true }).select('-passwordHash');
+  }
+
+  async updateLinks(id: string, links: any) {
+    const linksError = getLinksError(links);
+    if (linksError) throw new BadRequestException(linksError);
+    const sanitized: Record<string, string> = {};
+    for (const key of ALLOWED_LINK_KEYS) {
+      sanitized[key] = links[key] ? links[key].trim() : '';
+    }
+    return this.userModel.findByIdAndUpdate(id, { links: sanitized }, { new: true, runValidators: true }).select('-passwordHash');
   }
 
   deleteOwnAccount(id: string) {
     return this.userModel.findByIdAndDelete(id);
+  }
+
+  async updateProfileByAdmin(id: string, data: any) {
+    if (!Types.ObjectId.isValid(id)) throw new BadRequestException('Invalid user ID');
+    const currentUser = await this.userModel.findById(id);
+    if (!currentUser) throw new NotFoundException('User not found');
+
+    const update: Record<string, any> = this.buildProfileUpdate(data);
+    const changedFields: string[] = [];
+
+    if (update.name !== undefined && update.name !== currentUser.name) changedFields.push('Name');
+    if (update.bio !== undefined && update.bio !== currentUser.bio) changedFields.push('Bio');
+    if (update.avatarUrl !== undefined && update.avatarUrl !== currentUser.avatarUrl) changedFields.push('Profile Photo');
+
+    if (data.skills !== undefined) {
+      if (!Array.isArray(data.skills) || !data.skills.every((s: any) => typeof s === 'string')) {
+        throw new BadRequestException('Skills must be an array of strings');
+      }
+      if (JSON.stringify(data.skills) !== JSON.stringify(currentUser.skills)) {
+        update.skills = data.skills;
+        changedFields.push('Skills');
+      }
+    }
+
+    if (data.experiences !== undefined) {
+      this.validateExperiences(data.experiences);
+      if (JSON.stringify(data.experiences) !== JSON.stringify(currentUser.experiences)) {
+        update.experiences = data.experiences;
+        changedFields.push('Experience');
+      }
+    }
+
+    if (data.education !== undefined) {
+      this.validateEducation(data.education);
+      if (JSON.stringify(data.education) !== JSON.stringify(currentUser.education)) {
+        update.education = data.education;
+        changedFields.push('Education');
+      }
+    }
+
+    if (data.links !== undefined) {
+      const linksError = getLinksError(data.links);
+      if (linksError) throw new BadRequestException(linksError);
+      const sanitized: Record<string, string> = {};
+      for (const key of ALLOWED_LINK_KEYS) {
+        sanitized[key] = data.links[key] ? data.links[key].trim() : '';
+      }
+      if (JSON.stringify(sanitized) !== JSON.stringify(currentUser.links)) {
+        update.links = sanitized;
+        changedFields.push('Links');
+      }
+    }
+
+    const updatedUser = await this.userModel
+      .findByIdAndUpdate(id, update, { new: true, runValidators: true })
+      .select('-passwordHash');
+
+    if (changedFields.length > 0) {
+      await this.notificationsService.create(id, `Your profile was edited by an admin. Updated: ${changedFields.join(', ')}.`);
+    }
+
+    return updatedUser;
+  }
+
+  async deleteUserByAdmin(id: string, adminId: string) {
+    if (!Types.ObjectId.isValid(id)) throw new BadRequestException('Invalid user ID');
+    if (id === adminId) throw new BadRequestException('Use your account settings to delete your own account');
+    const user = await this.userModel.findById(id);
+    if (!user) throw new NotFoundException('User not found');
+    await this.userModel.findByIdAndDelete(id);
+    return { message: 'User deleted successfully' };
+  }
+
+  async changePassword(id: string, currentPassword: string, newPassword: string, confirmNewPassword: string) {
+    if (!currentPassword || !newPassword || !confirmNewPassword) {
+      throw new BadRequestException('Current password, new password, and confirm password are all required');
+    }
+    if (newPassword !== confirmNewPassword) {
+      throw new BadRequestException('New password and confirm password do not match');
+    }
+    const passwordError = getPasswordError(newPassword);
+    if (passwordError) {
+      throw new BadRequestException(`New ${passwordError.toLowerCase()}`);
+    }
+    const user = await this.userModel.findById(id);
+    if (!user) throw new NotFoundException('User not found');
+    const isMatch = await bcrypt.compare(currentPassword, user.passwordHash);
+    if (!isMatch) throw new BadRequestException('Current password is incorrect');
+    const isSameAsOld = await bcrypt.compare(newPassword, user.passwordHash);
+    if (isSameAsOld) throw new BadRequestException('New password must be different from your current password');
+    user.passwordHash = await bcrypt.hash(newPassword, 10);
+    await user.save();
+    return { message: 'Password updated successfully' };
   }
 }

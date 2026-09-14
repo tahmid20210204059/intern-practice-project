@@ -1,8 +1,10 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Eye, EyeOff } from 'lucide-react';
 import { apiCall } from '@/lib/api';
 import { saveSession } from '@/lib/auth';
+import { isValidEmail } from '@/lib/validators';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -14,7 +16,7 @@ export default function Login() {
 
   const validateLogin = () => {
     if (!email.trim()) return 'Email is required.';
-    if (!/^\S+@\S+\.\S+$/.test(email.trim())) return 'Please enter a valid email address.';
+    if (!isValidEmail(email.trim())) return 'Please enter a valid email address.';
     if (!password.trim()) return 'Password is required.';
     return '';
   };
@@ -59,62 +61,62 @@ export default function Login() {
   };
 
   return (
-    <div style={styles.page}>
-      <form onSubmit={handleSubmit} style={styles.card} autoComplete="off">
-        <h1 style={styles.title}>Welcome Back</h1>
-        <p style={styles.subtitle}>Log in to your account</p>
-        {error && <p style={styles.error}>{error}</p>}
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-6">
+      <form
+        onSubmit={handleSubmit}
+        autoComplete="off"
+        className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-sm ring-1 ring-slate-100"
+      >
+        <h1 className="text-xl font-bold text-slate-900">Welcome Back</h1>
+        <p className="mt-1 text-sm text-slate-500">Log in to your account</p>
+
+        {error && <p className="mt-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">{error}</p>}
 
         <input
-          style={styles.input}
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
           autoComplete="username"
+          className="mt-4 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
         />
 
-        <div style={styles.passwordWrap}>
+        <div className="relative mt-3">
           <input
-            style={styles.passwordInput}
             type={showPassword ? 'text' : 'password'}
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
             autoComplete="current-password"
+            className="w-full rounded-lg border border-slate-300 px-3 py-2.5 pr-10 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
           />
           <button
             type="button"
             onClick={() => setShowPassword((prev) => !prev)}
-            style={styles.eyeButton}
             aria-label={showPassword ? 'Hide password' : 'Show password'}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
           >
-            {showPassword ? '🙈' : '👁️'}
+            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
         </div>
 
-        <button style={styles.button} type="submit" disabled={loading}>
+        <button
+          type="submit"
+          disabled={loading}
+          className="mt-5 w-full rounded-lg bg-indigo-600 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-60"
+        >
           {loading ? 'Logging in...' : 'Log In'}
         </button>
-        <p style={styles.linkText}>Don't have an account? <a href="/signup" style={styles.link}>Sign up</a></p>
+
+        <p className="mt-5 text-center text-sm text-slate-500">
+          Don't have an account?{' '}
+          <a href="/signup" className="font-semibold text-indigo-600 hover:underline">
+            Sign up
+          </a>
+        </p>
       </form>
     </div>
   );
 }
-
-const styles: any = {
-  page: { minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f6fa', fontFamily: 'system-ui, sans-serif' },
-  card: { background: '#fff', padding: '2.5rem', borderRadius: '12px', boxShadow: '0 2px 12px rgba(0,0,0,0.08)', width: '340px' },
-  title: { margin: 0, fontSize: '1.5rem', color: '#1a1a2e' },
-  subtitle: { margin: '0.25rem 0 1.5rem', color: '#666', fontSize: '0.9rem' },
-  input: { width: '100%', padding: '0.8rem 0.9rem', marginBottom: '0.9rem', border: '1px solid #dfe3e8', borderRadius: '8px', fontSize: '0.95rem', boxSizing: 'border-box', background: '#fff', color: '#1f2937' },
-  passwordWrap: { position: 'relative', marginBottom: '0.9rem' },
-  passwordInput: { width: '100%', padding: '0.8rem 2.8rem 0.8rem 0.9rem', border: '1px solid #dfe3e8', borderRadius: '8px', fontSize: '0.95rem', boxSizing: 'border-box', background: '#fff', color: '#1f2937' },
-  eyeButton: { position: 'absolute', right: '0.65rem', top: '50%', transform: 'translateY(-50%)', background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '1rem', color: '#4b5563' },
-  button: { width: '100%', padding: '0.82rem', background: '#4338ca', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '0.95rem', fontWeight: 600, cursor: 'pointer', marginTop: '0.1rem' },
-  error: { color: '#dc2626', background: '#fee2e2', padding: '0.65rem 0.75rem', borderRadius: '6px', fontSize: '0.85rem', marginBottom: '1rem' },
-  linkText: { textAlign: 'center', marginTop: '1rem', fontSize: '0.85rem', color: '#666' },
-  link: { color: '#4338ca', fontWeight: 600, textDecoration: 'none' },
-};

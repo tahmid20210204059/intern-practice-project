@@ -19,25 +19,17 @@ export default function Home() {
   }, []);
 
   return (
-    <div style={styles.page}>
-      <div style={styles.card}>
-        <h1 style={styles.title}>Dev Community</h1>
-        <p style={styles.subtitle}>Connect. Share. Grow together.</p>
-        <div style={styles.buttons}>
-          <a href="/login" style={styles.loginBtn}>Log In</a>
-          <a href="/signup" style={styles.signupBtn}>Sign Up</a>
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-indigo-50 px-6">
+      <div className="text-center">
+        <h1 className="text-4xl font-extrabold tracking-tight text-slate-900">
+          Dev<span className="text-indigo-600">Community</span>
+        </h1>
+        <p className="mt-3 text-slate-500">Connect. Share. Grow together.</p>
+        <div className="mt-8 flex justify-center gap-4">
+          <a href="/login" className="rounded-lg border-2 border-indigo-600 px-6 py-2.5 font-semibold text-indigo-600 transition hover:bg-indigo-50">Log In</a>
+          <a href="/signup" className="rounded-lg bg-indigo-600 px-6 py-2.5 font-semibold text-white transition hover:bg-indigo-700">Sign Up</a>
         </div>
       </div>
     </div>
   );
 }
-
-const styles: any = {
-  page: { minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f6fa', fontFamily: 'system-ui, sans-serif' },
-  card: { textAlign: 'center' },
-  title: { fontSize: '2.2rem', color: '#1a1a2e', margin: 0 },
-  subtitle: { color: '#666', marginTop: '0.5rem' },
-  buttons: { display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '2rem' },
-  loginBtn: { padding: '0.7rem 1.8rem', border: '2px solid #4338ca', color: '#4338ca', borderRadius: '8px', textDecoration: 'none', fontWeight: 600 },
-  signupBtn: { padding: '0.7rem 1.8rem', background: '#4338ca', color: '#fff', borderRadius: '8px', textDecoration: 'none', fontWeight: 600 },
-};
