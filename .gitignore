@@ -1,4 +1,4 @@
 .env
 node_modules/
 frontend.zip
-tsconfig.tsbuildinfo
+tsconfig.build.tsbuildinfo
