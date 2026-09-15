@@ -42,5 +42,7 @@ export class User extends Document {
   @Prop({ type: [ExperienceSchema], default: [] }) experiences: Experience[];
   @Prop({ type: [EducationSchema], default: [] }) education: Education[];
   @Prop({ type: LinksSchema, default: () => ({}) }) links: Links;
+  @Prop({ type: String, default: null, index: true }) refreshTokenHash: string | null;
+  @Prop({ type: Date, default: null }) refreshTokenExpiresAt: Date | null;
 }
 export const UserSchema = SchemaFactory.createForClass(User);

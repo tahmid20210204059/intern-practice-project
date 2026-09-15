@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiCall } from '@/lib/api';
-import { getToken } from '@/lib/auth';
 import Navbar from '@/components/Navbar';
 
 export default function AdminDashboard() {
@@ -19,10 +18,6 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     const load = async () => {
-      if (!getToken()) {
-        router.push('/login');
-        return;
-      }
       const me = await apiCall('/users/me');
       if (!me.success) {
         router.push('/login');

@@ -1,95 +1,104 @@
 'use client';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
 import { apiCall } from '@/lib/api';
 import { saveSession } from '@/lib/auth';
-import { isValidEmail } from '@/lib/validators';
+import { loginSchema, LoginFormValues } from '@/lib/schemas';
+
+interface LoginResponseData {
+  access_token: string;
+  user: { id: string; name: string; email: string; role: 'user' | 'admin' };
+}
+
+function friendlyServerError(message: string): string {
+  const lower = message.toLowerCase();
+  if (lower.includes('credentials') || lower.includes('invalid')) {
+    return 'Email or password is incorrect. Please check both fields and try again.';
+  }
+  if (lower.includes('email')) return 'This email is not registered. Please sign up first.';
+  if (lower.includes('password')) return 'Password is incorrect. Please check your password and try again.';
+  return 'Login failed. Please check your email and password and try again.';
+}
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
 
-  const validateLogin = () => {
-    if (!email.trim()) return 'Email is required.';
-    if (!isValidEmail(email.trim())) return 'Please enter a valid email address.';
-    if (!password.trim()) return 'Password is required.';
-    return '';
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormValues>({ resolver: zodResolver(loginSchema) });
+
+  const loginMutation = useMutation({
+    mutationFn: async (values: LoginFormValues) => {
+      const res = await apiCall<LoginResponseData>('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify(values),
+      });
+      if (!res.success) throw new Error(res.message);
+      return res.data;
+    },
+    onSuccess: (data) => {
+      saveSession(data.access_token, data.user);
+      router.push(data.user.role === 'admin' ? '/dashboard/admin' : '/dashboard/user');
+    },
+  });
+
+  const onSubmit = (values: LoginFormValues) => {
+    loginMutation.reset();
+    loginMutation.mutate(values);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const validationError = validateLogin();
-    if (validationError) {
-      setError(validationError);
-      return;
-    }
-
-    setError('');
-    setLoading(true);
-    const res = await apiCall('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ email: email.trim(), password }),
-    });
-    setLoading(false);
-
-    if (res.success) {
-      setEmail('');
-      setPassword('');
-      saveSession(res.data.access_token, res.data.user);
-      router.push(res.data.user.role === 'admin' ? '/dashboard/admin' : '/dashboard/user');
-      return;
-    }
-
-    const message = typeof res?.message === 'string' ? res.message : '';
-    if (message.toLowerCase().includes('credentials') || message.toLowerCase().includes('invalid')) {
-      setError('Email or password is incorrect. Please check both fields and try again.');
-    } else if (message.toLowerCase().includes('email')) {
-      setError('This email is not registered. Please sign up first.');
-    } else if (message.toLowerCase().includes('password')) {
-      setError('Password is incorrect. Please check your password and try again.');
-    } else {
-      setError('Login failed. Please check your email and password and try again.');
-    }
-
-    setEmail('');
-    setPassword('');
-  };
+  const isPending = loginMutation.isPending;
+  const serverError = loginMutation.isError ? friendlyServerError((loginMutation.error as Error).message) : '';
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-50 px-6">
       <form
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit(onSubmit)}
+        noValidate
         autoComplete="off"
         className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-sm ring-1 ring-slate-100"
       >
         <h1 className="text-xl font-bold text-slate-900">Welcome Back</h1>
         <p className="mt-1 text-sm text-slate-500">Log in to your account</p>
 
-        {error && <p className="mt-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">{error}</p>}
+        {serverError && (
+          <p role="alert" aria-live="polite" className="mt-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">
+            {serverError}
+          </p>
+        )}
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          autoComplete="username"
-          className="mt-4 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-        />
+        <div className="mt-4">
+          <input
+            type="email"
+            placeholder="Email"
+            autoComplete="username"
+            aria-invalid={!!errors.email}
+            aria-describedby={errors.email ? 'email-error' : undefined}
+            {...register('email')}
+            className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+          />
+          {errors.email && (
+            <p id="email-error" role="alert" className="mt-1 text-xs text-red-600">
+              {errors.email.message}
+            </p>
+          )}
+        </div>
 
         <div className="relative mt-3">
           <input
             type={showPassword ? 'text' : 'password'}
             placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
             autoComplete="current-password"
+            aria-invalid={!!errors.password}
+            aria-describedby={errors.password ? 'password-error' : undefined}
+            {...register('password')}
             className="w-full rounded-lg border border-slate-300 px-3 py-2.5 pr-10 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
           />
           <button
@@ -101,13 +110,18 @@ export default function Login() {
             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
         </div>
+        {errors.password && (
+          <p id="password-error" role="alert" className="mt-1 text-xs text-red-600">
+            {errors.password.message}
+          </p>
+        )}
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={isPending}
           className="mt-5 w-full rounded-lg bg-indigo-600 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-60"
         >
-          {loading ? 'Logging in...' : 'Log In'}
+          {isPending ? 'Logging in...' : 'Log In'}
         </button>
 
         <p className="mt-5 text-center text-sm text-slate-500">

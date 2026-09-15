@@ -2,14 +2,12 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiCall } from '@/lib/api';
-import { getToken } from '@/lib/auth';
 
 export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
     const check = async () => {
-      if (!getToken()) return;
       const res = await apiCall('/users/me');
       if (res.success) {
         router.push(res.data.role === 'admin' ? '/dashboard/admin' : '/dashboard/user');

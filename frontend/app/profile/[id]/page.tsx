@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Globe, GitBranch, BriefcaseBusiness, Users } from 'lucide-react';
 import { apiCall } from '@/lib/api';
-import { getToken } from '@/lib/auth';
 import Navbar from '@/components/Navbar';
 import SkillsEditor from '@/components/SkillsEditor';
 import ExperienceEditor from '@/components/ExperienceEditor';
@@ -48,10 +47,6 @@ export default function ProfilePage() {
 
   useEffect(() => {
     const load = async () => {
-      if (!getToken()) {
-        router.push('/login');
-        return;
-      }
       const me = await apiCall('/users/me');
       if (!me.success) {
         router.push('/login');
@@ -114,28 +109,28 @@ export default function ProfilePage() {
     const endpoint = isOwnProfile ? '/users/me/skills' : `/users/${id}`;
     const res = await apiCall(endpoint, { method: 'PATCH', body: JSON.stringify({ skills }) });
     if (res.success) setProfile(res.data);
-    return { success: res.success, message: res.message };
+    return { success: res.success, message: res.success ? undefined : res.message };
   };
 
   const handleExperiencesSave = async (experiences: any[]) => {
     const endpoint = isOwnProfile ? '/users/me/experiences' : `/users/${id}`;
     const res = await apiCall(endpoint, { method: 'PATCH', body: JSON.stringify({ experiences }) });
     if (res.success) setProfile(res.data);
-    return { success: res.success, message: res.message };
+    return { success: res.success, message: res.success ? undefined : res.message };
   };
 
   const handleEducationSave = async (education: any[]) => {
     const endpoint = isOwnProfile ? '/users/me/education' : `/users/${id}`;
     const res = await apiCall(endpoint, { method: 'PATCH', body: JSON.stringify({ education }) });
     if (res.success) setProfile(res.data);
-    return { success: res.success, message: res.message };
+    return { success: res.success, message: res.success ? undefined : res.message };
   };
 
   const handleLinksSave = async (links: any) => {
     const endpoint = isOwnProfile ? '/users/me/links' : `/users/${id}`;
     const res = await apiCall(endpoint, { method: 'PATCH', body: JSON.stringify({ links }) });
     if (res.success) setProfile(res.data);
-    return { success: res.success, message: res.message };
+    return { success: res.success, message: res.success ? undefined : res.message };
   };
 
   const handleDeleteProfile = async () => {

@@ -17,6 +17,18 @@ export class UsersService {
     return this.userModel.findOne({ email });
   }
 
+  findByRefreshTokenHash(hash: string) {
+    return this.userModel.findOne({ refreshTokenHash: hash });
+  }
+
+  setRefreshToken(id: string, hash: string, expiresAt: Date) {
+    return this.userModel.findByIdAndUpdate(id, { refreshTokenHash: hash, refreshTokenExpiresAt: expiresAt });
+  }
+
+  clearRefreshToken(id: string) {
+    return this.userModel.findByIdAndUpdate(id, { refreshTokenHash: null, refreshTokenExpiresAt: null });
+  }
+
   async findById(id: string) {
     if (!Types.ObjectId.isValid(id)) throw new BadRequestException('Invalid user ID');
     const user = await this.userModel.findById(id).select('-passwordHash');

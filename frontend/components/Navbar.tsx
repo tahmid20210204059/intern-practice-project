@@ -1,7 +1,8 @@
 'use client';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { logout } from '@/lib/auth';
+import { apiCall } from '@/lib/api';
+import { clearSession } from '@/lib/auth';
 import NotificationBell from './NotificationBell';
 
 interface NavbarProps {
@@ -14,8 +15,9 @@ export default function Navbar({ name, role, avatarUrl }: NavbarProps) {
   const router = useRouter();
   const dashboardHref = role === 'admin' ? '/dashboard/admin' : '/dashboard/user';
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await apiCall('/auth/logout', { method: 'POST' });
+    clearSession();
     router.push('/login');
   };
 

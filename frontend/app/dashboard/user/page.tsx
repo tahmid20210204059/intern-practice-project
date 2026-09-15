@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { apiCall } from '@/lib/api';
-import { getToken } from '@/lib/auth';
 import Navbar from '@/components/Navbar';
 
 export default function UserDashboard() {
@@ -14,14 +13,9 @@ export default function UserDashboard() {
 
   useEffect(() => {
     const load = async () => {
-      if (!getToken()) {
-        router.push('/login');
-        return;
-      }
       const res = await apiCall('/users/me');
       if (!res.success) {
-        setError(res.message || 'Could not load your dashboard.');
-        setLoading(false);
+        router.push('/login');
         return;
       }
       if (res.data.role === 'admin') {
