@@ -13,7 +13,7 @@ const REFRESH_COOKIE_PATH = '/auth';
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   private cookieOptions(expiresAt?: Date) {
     const isProd = process.env.NODE_ENV === 'production';
