@@ -2,9 +2,9 @@ import { Injectable, BadRequestException, NotFoundException } from '@nestjs/comm
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import * as bcrypt from 'bcrypt';
-import { User } from './schemas/user.schema';
-import { NotificationsService } from '../notifications/notifications.service';
-import { getPasswordError, getLinksError, ALLOWED_LINK_KEYS } from '../common/validators';
+import { User } from './schemas/user.schema.js';
+import { NotificationsService } from '../notifications/notifications.service.js';
+import { getPasswordError, ALLOWED_LINK_KEYS } from '../common/validators.js';
 
 @Injectable()
 export class UsersService {
@@ -61,12 +61,16 @@ export class UsersService {
     return this.userModel.findByIdAndUpdate(id, { role }, { new: true }).select('-passwordHash');
   }
 
-  private buildProfileUpdate(data: { name?: string; bio?: string; avatarUrl?: string }) {
+  private buildProfileUpdate(data: { name?: string; headline?: string; bio?: string; avatarUrl?: string }) {
     const update: Record<string, any> = {};
 
     if (data.name !== undefined) {
       if (!data.name.trim()) throw new BadRequestException('Name cannot be empty');
       update.name = data.name.trim();
+    }
+
+    if (data.headline !== undefined) {
+      update.headline = data.headline.trim();
     }
 
     if (data.bio !== undefined) {
@@ -91,52 +95,27 @@ export class UsersService {
     return update;
   }
 
-  private validateExperiences(experiences: any[]) {
-    if (!Array.isArray(experiences)) throw new BadRequestException('Experiences must be an array');
-    for (const exp of experiences) {
-      if (!exp.title || !exp.company) {
-        throw new BadRequestException('Each experience requires title and company');
-      }
-    }
-  }
-
-  private validateEducation(education: any[]) {
-    if (!Array.isArray(education)) throw new BadRequestException('Education must be an array');
-    for (const edu of education) {
-      if (!edu.degree || !edu.institute) {
-        throw new BadRequestException('Each education entry requires degree and institute');
-      }
-    }
-  }
-
-  async updateOwnProfile(id: string, data: { name?: string; bio?: string; avatarUrl?: string }) {
+  async updateOwnProfile(id: string, data: { name?: string; headline?: string; bio?: string; avatarUrl?: string }) {
     const update = this.buildProfileUpdate(data);
     return this.userModel.findByIdAndUpdate(id, update, { new: true, runValidators: true }).select('-passwordHash');
   }
 
   async updateSkills(id: string, skills: string[]) {
-    if (!Array.isArray(skills) || !skills.every((s) => typeof s === 'string')) {
-      throw new BadRequestException('Skills must be an array of strings');
-    }
     return this.userModel.findByIdAndUpdate(id, { skills }, { new: true, runValidators: true }).select('-passwordHash');
   }
 
   async updateExperiences(id: string, experiences: any[]) {
-    this.validateExperiences(experiences);
     return this.userModel.findByIdAndUpdate(id, { experiences }, { new: true, runValidators: true }).select('-passwordHash');
   }
 
   async updateEducation(id: string, education: any[]) {
-    this.validateEducation(education);
     return this.userModel.findByIdAndUpdate(id, { education }, { new: true, runValidators: true }).select('-passwordHash');
   }
 
   async updateLinks(id: string, links: any) {
-    const linksError = getLinksError(links);
-    if (linksError) throw new BadRequestException(linksError);
     const sanitized: Record<string, string> = {};
     for (const key of ALLOWED_LINK_KEYS) {
-      sanitized[key] = links[key] ? links[key].trim() : '';
+      sanitized[key] = links?.[key] ? links[key].trim() : '';
     }
     return this.userModel.findByIdAndUpdate(id, { links: sanitized }, { new: true, runValidators: true }).select('-passwordHash');
   }
@@ -154,13 +133,11 @@ export class UsersService {
     const changedFields: string[] = [];
 
     if (update.name !== undefined && update.name !== currentUser.name) changedFields.push('Name');
+    if (update.headline !== undefined && update.headline !== currentUser.headline) changedFields.push('Headline');
     if (update.bio !== undefined && update.bio !== currentUser.bio) changedFields.push('Bio');
     if (update.avatarUrl !== undefined && update.avatarUrl !== currentUser.avatarUrl) changedFields.push('Profile Photo');
 
     if (data.skills !== undefined) {
-      if (!Array.isArray(data.skills) || !data.skills.every((s: any) => typeof s === 'string')) {
-        throw new BadRequestException('Skills must be an array of strings');
-      }
       if (JSON.stringify(data.skills) !== JSON.stringify(currentUser.skills)) {
         update.skills = data.skills;
         changedFields.push('Skills');
@@ -168,7 +145,6 @@ export class UsersService {
     }
 
     if (data.experiences !== undefined) {
-      this.validateExperiences(data.experiences);
       if (JSON.stringify(data.experiences) !== JSON.stringify(currentUser.experiences)) {
         update.experiences = data.experiences;
         changedFields.push('Experience');
@@ -176,7 +152,6 @@ export class UsersService {
     }
 
     if (data.education !== undefined) {
-      this.validateEducation(data.education);
       if (JSON.stringify(data.education) !== JSON.stringify(currentUser.education)) {
         update.education = data.education;
         changedFields.push('Education');
@@ -184,8 +159,6 @@ export class UsersService {
     }
 
     if (data.links !== undefined) {
-      const linksError = getLinksError(data.links);
-      if (linksError) throw new BadRequestException(linksError);
       const sanitized: Record<string, string> = {};
       for (const key of ALLOWED_LINK_KEYS) {
         sanitized[key] = data.links[key] ? data.links[key].trim() : '';

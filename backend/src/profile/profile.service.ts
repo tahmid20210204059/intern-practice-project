@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User } from '../users/schemas/user.schema';
-import { UpdateProfileDto } from './dto/update-profile.dto';
+import { User } from '../users/schemas/user.schema.js';
+import { UpdateProfileDto } from './dto/update-profile.dto.js';
 
 // Fields that must never be returned from the profile endpoints.
 const PRIVATE_FIELD_SELECTOR = '-passwordHash -refreshTokenHash -refreshTokenExpiresAt';

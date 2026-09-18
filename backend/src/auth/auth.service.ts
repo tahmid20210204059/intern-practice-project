@@ -3,8 +3,8 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
-import { UsersService } from '../users/users.service';
-import { getPasswordError } from '../common/validators';
+import { UsersService } from '../users/users.service.js';
+import { getPasswordError } from '../common/validators.js';
 
 interface TokenPair {
   accessToken: string;

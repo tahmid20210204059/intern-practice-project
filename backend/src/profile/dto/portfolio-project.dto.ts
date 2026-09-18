@@ -11,8 +11,11 @@ import {
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
-import { IsAfterOrEqualMonth } from '../../common/validators/date-range.validator';
-import { ProjectUrlsDto } from './project-urls.dto';
+import {
+  IsAfterOrEqualMonth,
+  IsNotFutureMonth,
+} from '../../common/validators/date-range.validator.js';
+import { ProjectUrlsDto } from './project-urls.dto.js';
 
 // Matches the "YYYY-MM" format produced by <input type="month">, the same
 // convention already used for Experience/Education from/to fields.
@@ -49,6 +52,7 @@ export class PortfolioProjectDto {
   @IsString()
   @IsNotEmpty({ message: 'Start date is required' })
   @Matches(MONTH_REGEX, { message: 'Start date must be in YYYY-MM format' })
+  @IsNotFutureMonth({ message: 'Start date cannot be in the future' })
   from: string;
 
   @IsOptional()

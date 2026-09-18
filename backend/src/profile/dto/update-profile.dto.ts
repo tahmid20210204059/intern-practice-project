@@ -7,7 +7,7 @@ import {
   MaxLength,
   ValidateNested,
 } from 'class-validator';
-import { PortfolioProjectDto } from './portfolio-project.dto';
+import { PortfolioProjectDto } from './portfolio-project.dto.js';
 
 export class UpdateProfileDto {
   @IsOptional()

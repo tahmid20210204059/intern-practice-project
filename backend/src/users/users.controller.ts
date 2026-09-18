@@ -1,29 +1,38 @@
 import { Controller, Get, Patch, Delete, Param, Body, Req, UseGuards, BadRequestException } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
-import { UsersService } from './users.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { RolesGuard } from '../auth/roles.guard';
-import { Roles } from '../auth/roles.decorator';
+import { UsersService } from './users.service.js';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
+import { RolesGuard } from '../auth/roles.guard.js';
+import { Roles } from '../auth/roles.decorator.js';
+import { ChangePasswordDto } from './dto/change-password.dto.js';
+import { UpdateEducationDto } from './dto/update-education.dto.js';
+import { UpdateExperiencesDto } from './dto/update-experiences.dto.js';
+import { UpdateLinksDto } from './dto/update-links.dto.js';
+import { UpdateSkillsDto } from './dto/update-skills.dto.js';
+import { UpdateUserAdminDto } from './dto/update-user-admin.dto.js';
+import { UpdateUserProfileDto } from './dto/update-user-profile.dto.js';
 
 const experienceItemSchema = {
   type: 'object' as const,
+  required: ['title', 'company', 'from'],
   properties: {
-    title: { type: 'string' },
-    company: { type: 'string' },
-    from: { type: 'string' },
-    to: { type: 'string' },
-    description: { type: 'string' },
+    title: { type: 'string', maxLength: 120 },
+    company: { type: 'string', maxLength: 120 },
+    from: { type: 'string', pattern: '^\\d{4}-(0[1-9]|1[0-2])$' },
+    to: { type: 'string', pattern: '^\\d{4}-(0[1-9]|1[0-2])$', nullable: true },
+    description: { type: 'string', maxLength: 500 },
   },
 };
 
 const educationItemSchema = {
   type: 'object' as const,
+  required: ['degree', 'institute', 'from'],
   properties: {
-    degree: { type: 'string' },
-    institute: { type: 'string' },
-    subject: { type: 'string' },
-    from: { type: 'string' },
-    to: { type: 'string' },
+    degree: { type: 'string', maxLength: 120 },
+    institute: { type: 'string', maxLength: 120 },
+    subject: { type: 'string', maxLength: 120 },
+    from: { type: 'string', pattern: '^\\d{4}-(0[1-9]|1[0-2])$' },
+    to: { type: 'string', pattern: '^\\d{4}-(0[1-9]|1[0-2])$', nullable: true },
   },
 };
 
@@ -59,36 +68,36 @@ export class UsersController {
   @Patch('me')
   @UseGuards(JwtAuthGuard)
   @ApiBody({ schema: { properties: { name: { type: 'string' }, bio: { type: 'string' }, avatarUrl: { type: 'string' } } } })
-  updateMyProfile(@Req() req: any, @Body() body: any) {
+  updateMyProfile(@Req() req: any, @Body() body: UpdateUserProfileDto) {
     return this.usersService.updateOwnProfile(req.user.userId, body);
   }
 
   @Patch('me/skills')
   @UseGuards(JwtAuthGuard)
   @ApiBody({ schema: { properties: { skills: { type: 'array', items: { type: 'string' } } } } })
-  updateMySkills(@Req() req: any, @Body('skills') skills: string[]) {
-    return this.usersService.updateSkills(req.user.userId, skills);
+  updateMySkills(@Req() req: any, @Body() body: UpdateSkillsDto) {
+    return this.usersService.updateSkills(req.user.userId, body.skills);
   }
 
   @Patch('me/experiences')
   @UseGuards(JwtAuthGuard)
   @ApiBody({ schema: { properties: { experiences: { type: 'array', items: experienceItemSchema } } } })
-  updateMyExperiences(@Req() req: any, @Body('experiences') experiences: any[]) {
-    return this.usersService.updateExperiences(req.user.userId, experiences);
+  updateMyExperiences(@Req() req: any, @Body() body: UpdateExperiencesDto) {
+    return this.usersService.updateExperiences(req.user.userId, body.experiences);
   }
 
   @Patch('me/education')
   @UseGuards(JwtAuthGuard)
   @ApiBody({ schema: { properties: { education: { type: 'array', items: educationItemSchema } } } })
-  updateMyEducation(@Req() req: any, @Body('education') education: any[]) {
-    return this.usersService.updateEducation(req.user.userId, education);
+  updateMyEducation(@Req() req: any, @Body() body: UpdateEducationDto) {
+    return this.usersService.updateEducation(req.user.userId, body.education);
   }
 
   @Patch('me/links')
   @UseGuards(JwtAuthGuard)
   @ApiBody({ schema: { properties: { links: linksSchema } } })
-  updateMyLinks(@Req() req: any, @Body('links') links: any) {
-    return this.usersService.updateLinks(req.user.userId, links);
+  updateMyLinks(@Req() req: any, @Body() body: UpdateLinksDto) {
+    return this.usersService.updateLinks(req.user.userId, body.links);
   }
 
   @Patch('me/password')
@@ -102,7 +111,7 @@ export class UsersController {
       },
     },
   })
-  changeMyPassword(@Req() req: any, @Body() body: { currentPassword: string; newPassword: string; confirmNewPassword: string }) {
+  changeMyPassword(@Req() req: any, @Body() body: ChangePasswordDto) {
     return this.usersService.changePassword(req.user.userId, body.currentPassword, body.newPassword, body.confirmNewPassword);
   }
 
@@ -135,7 +144,7 @@ export class UsersController {
       },
     },
   })
-  updateUserByAdmin(@Param('id') id: string, @Body() body: any) {
+  updateUserByAdmin(@Param('id') id: string, @Body() body: UpdateUserAdminDto) {
     return this.usersService.updateProfileByAdmin(id, body);
   }
 

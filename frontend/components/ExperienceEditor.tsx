@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { formatMonth } from '@/lib/dateUtils';
+import { experienceItemSchema } from '@/lib/schemas';
 
 interface Experience {
   title: string;
@@ -37,18 +38,22 @@ export default function ExperienceEditor({ experiences, onSave, onCancel }: Expe
   };
 
   const handleAddOrUpdate = () => {
-    if (!form.title.trim() || !form.company.trim() || !form.from) {
-      setFormError('Title, company, and start date are required.');
+    const entry = { ...form, to: isCurrent ? '' : form.to };
+    const parsed = experienceItemSchema.safeParse(entry);
+
+    if (!parsed.success) {
+      const issue = parsed.error.issues[0];
+      setFormError(issue?.message || 'Please check the experience details.');
       return;
     }
-    const entry = { ...form, to: isCurrent ? '' : form.to };
+
     setFormError('');
     if (editingIndex !== null) {
       const updated = [...localExperiences];
-      updated[editingIndex] = entry;
+      updated[editingIndex] = parsed.data;
       setLocalExperiences(updated);
     } else {
-      setLocalExperiences([...localExperiences, entry]);
+      setLocalExperiences([...localExperiences, parsed.data]);
     }
     resetForm();
   };
@@ -145,6 +150,7 @@ export default function ExperienceEditor({ experiences, onSave, onCancel }: Expe
                 onChange={(e) => setForm({ ...form, to: e.target.value })}
                 className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-100 disabled:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
               />
+              {formError && formError.includes('End date') && <p className="mt-1 text-xs text-red-600">{formError}</p>}
               <label className="mt-1.5 flex items-center gap-1.5 text-xs text-slate-500">
                 <input type="checkbox" checked={isCurrent} onChange={(e) => setIsCurrent(e.target.checked)} className="rounded border-slate-300" />
                 I currently work here

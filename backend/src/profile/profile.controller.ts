@@ -7,9 +7,9 @@ import {
   ApiUnauthorizedResponse,
   ApiBadRequestResponse,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { ProfileService } from './profile.service';
-import { UpdateProfileDto } from './dto/update-profile.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
+import { ProfileService } from './profile.service.js';
+import { UpdateProfileDto } from './dto/update-profile.dto.js';
 
 const portfolioProjectSchema = {
   type: 'object' as const,

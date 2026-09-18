@@ -4,6 +4,21 @@ import {
   ValidationArguments,
 } from 'class-validator';
 
+const MONTH_REGEX = /^\d{4}-(0[1-9]|1[0-2])$/;
+
+export function isMonthInPastOrCurrent(value: string): boolean {
+  if (typeof value !== 'string' || !value || !MONTH_REGEX.test(value)) {
+    return false;
+  }
+
+  const [year, month] = value.split('-').map(Number);
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth() + 1;
+
+  return year < currentYear || (year === currentYear && month <= currentMonth);
+}
+
 /**
  * Validates that the decorated "YYYY-MM" string property is not chronologically
  * before another "YYYY-MM" string property on the same object.
@@ -38,6 +53,26 @@ export function IsAfterOrEqualMonth(
         defaultMessage(args: ValidationArguments) {
           const [relatedPropertyName] = args.constraints as [string];
           return `${args.property} cannot be earlier than ${relatedPropertyName}`;
+        },
+      },
+    });
+  };
+}
+
+export function IsNotFutureMonth(validationOptions?: ValidationOptions) {
+  return function (object: object, propertyName: string) {
+    registerDecorator({
+      name: 'isNotFutureMonth',
+      target: object.constructor,
+      propertyName,
+      options: validationOptions,
+      validator: {
+        validate(value: unknown) {
+          if (typeof value !== 'string' || !value) return true;
+          return isMonthInPastOrCurrent(value);
+        },
+        defaultMessage(args: ValidationArguments) {
+          return `${args.property} cannot be in the future`;
         },
       },
     });

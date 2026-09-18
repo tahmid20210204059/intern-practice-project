@@ -67,16 +67,6 @@ export default function UserDashboard() {
           </div>
         </div>
 
-        <div className="mt-6 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-100">
-          <h2 className="text-lg font-semibold text-slate-900">Your Profile</h2>
-          <p className="mt-1 text-sm text-slate-500">View or edit your skills, experience, and details.</p>
-          <Link
-            href="/profile/me"
-            className="mt-4 inline-block rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
-          >
-            Go to My Profile
-          </Link>
-        </div>
       </main>
     </div>
   );

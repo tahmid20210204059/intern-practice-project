@@ -23,6 +23,13 @@ const PLATFORMS: { key: keyof LinksData; label: string; icon: any; placeholder: 
   { key: 'facebook', label: 'Facebook', icon: Users, placeholder: 'https://facebook.com/username' },
 ];
 
+const getPlatformError = (platform: keyof LinksData, label: string) => {
+  if (platform === 'portfolio') return 'Portfolio link must start with http:// or https://';
+  if (platform === 'github') return 'GitHub link must be a valid github.com URL';
+  if (platform === 'linkedin') return 'LinkedIn link must be a valid linkedin.com URL';
+  return 'Facebook link must be a valid facebook.com URL';
+};
+
 export default function LinksEditor({ links, onSave, onCancel }: LinksEditorProps) {
   const [form, setForm] = useState<LinksData>({
     portfolio: links.portfolio || '',
@@ -36,8 +43,8 @@ export default function LinksEditor({ links, onSave, onCancel }: LinksEditorProp
 
   const handleSave = async () => {
     for (const platform of PLATFORMS) {
-      if (!isValidLinkUrl(form[platform.key])) {
-        setFormError(`${platform.label} link must start with http:// or https://`);
+      if (!isValidLinkUrl(platform.key, form[platform.key])) {
+        setFormError(getPlatformError(platform.key, platform.label));
         return;
       }
     }

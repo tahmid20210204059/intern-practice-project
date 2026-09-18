@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { formatMonth } from '@/lib/dateUtils';
+import { educationItemSchema } from '@/lib/schemas';
 
 interface EducationItem {
   degree: string;
@@ -37,18 +38,22 @@ export default function EducationEditor({ education, onSave, onCancel }: Educati
   };
 
   const handleAddOrUpdate = () => {
-    if (!form.degree.trim() || !form.institute.trim() || !form.from) {
-      setFormError('Degree, institute, and start date are required.');
+    const entry = { ...form, to: isCurrent ? '' : form.to };
+    const parsed = educationItemSchema.safeParse(entry);
+
+    if (!parsed.success) {
+      const issue = parsed.error.issues[0];
+      setFormError(issue?.message || 'Please check the education details.');
       return;
     }
-    const entry = { ...form, to: isCurrent ? '' : form.to };
+
     setFormError('');
     if (editingIndex !== null) {
       const updated = [...localEducation];
-      updated[editingIndex] = entry;
+      updated[editingIndex] = parsed.data;
       setLocalEducation(updated);
     } else {
-      setLocalEducation([...localEducation, entry]);
+      setLocalEducation([...localEducation, parsed.data]);
     }
     resetForm();
   };
@@ -151,6 +156,7 @@ export default function EducationEditor({ education, onSave, onCancel }: Educati
                 onChange={(e) => setForm({ ...form, to: e.target.value })}
                 className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-100 disabled:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
               />
+              {formError && formError.includes('End date') && <p className="mt-1 text-xs text-red-600">{formError}</p>}
               <label className="mt-1.5 flex items-center gap-1.5 text-xs text-slate-500">
                 <input type="checkbox" checked={isCurrent} onChange={(e) => setIsCurrent(e.target.checked)} className="rounded border-slate-300" />
                 I currently study here
