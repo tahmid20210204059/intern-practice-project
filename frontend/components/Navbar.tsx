@@ -29,6 +29,7 @@ export default function Navbar({ name, role, avatarUrl }: NavbarProps) {
         </Link>
         <nav className="flex items-center gap-5 text-sm font-medium text-slate-600">
           <Link href={dashboardHref} className="hidden hover:text-indigo-600 sm:inline">Dashboard</Link>
+          <Link href="/feed" className="hidden hover:text-indigo-600 sm:inline">Feed</Link>
           <span
             className={`hidden items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium sm:inline-flex ${
               role === 'admin' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-indigo-200 bg-indigo-50 text-indigo-700'

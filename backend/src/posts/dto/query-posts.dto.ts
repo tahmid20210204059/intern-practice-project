@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsInt, IsOptional, Max, Min } from 'class-validator';
+import { IsInt, IsMongoId, IsOptional, Max, Min } from 'class-validator';
 
 export class QueryPostsDto {
   @IsOptional()
@@ -14,4 +14,8 @@ export class QueryPostsDto {
   @Min(1, { message: 'limit must be at least 1' })
   @Max(100, { message: 'limit must be at most 100' })
   limit?: number = 20;
+
+  @IsOptional()
+  @IsMongoId({ message: 'authorId must be a valid ID' })
+  authorId?: string;
 }

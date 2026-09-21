@@ -18,6 +18,7 @@ import {
   ShieldCheck,
   Mail,
   ArrowUpRight,
+  FileText,
 } from 'lucide-react';
 import { apiCall } from '@/lib/api';
 import Navbar from '@/components/Navbar';
@@ -26,6 +27,7 @@ import ExperienceEditor from '@/components/ExperienceEditor';
 import EducationEditor from '@/components/EducationEditor';
 import LinksEditor from '@/components/LinksEditor';
 import ChangePasswordForm from '@/components/ChangePasswordForm';
+import ProfilePosts from '@/components/ProfilePosts';
 import { formatMonth } from '@/lib/dateUtils';
 
 type Section = 'about' | 'skills' | 'experience' | 'education' | 'links' | 'security' | null;
@@ -44,6 +46,7 @@ const NAV_ITEMS: { id: string; label: string }[] = [
   { id: 'skills', label: 'Skills' },
   { id: 'portfolio', label: 'Portfolio' },
   { id: 'links', label: 'Links' },
+  { id: 'posts', label: 'Posts' },
 ];
 
 function SectionCard({
@@ -663,7 +666,7 @@ export default function ProfilePage() {
                   {activeLinks.map(({ key, label, icon: Icon }) => (
                     <a
                       key={key}
-                      href={profile.links?.[key] ?? '#' }
+                      href={profile.links?.[key] ?? '#'}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-indigo-300 hover:text-indigo-600"
@@ -707,6 +710,31 @@ export default function ProfilePage() {
                 )}
               </SectionCard>
             )}
+
+            <SectionCard
+              id="posts"
+              icon={FileText}
+              title="Posts"
+              description="All posts, newest first."
+              action={
+                isOwnProfile && (
+                  <Link
+                    href="/posts/new"
+                    className="inline-flex items-center gap-1 text-sm font-medium text-indigo-600 hover:underline"
+                  >
+                    New Post
+                    <ArrowUpRight size={14} />
+                  </Link>
+                )
+              }
+            >
+              <ProfilePosts
+                profileId={profile._id}
+                currentUserId={viewer._id}
+                currentUserRole={viewer.role}
+                isOwnProfile={isOwnProfile}
+              />
+            </SectionCard>
           </div>
         </div>
       </main>

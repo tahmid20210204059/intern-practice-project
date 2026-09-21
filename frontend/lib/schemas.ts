@@ -186,3 +186,9 @@ export type PortfolioProjectFormValues = z.infer<typeof portfolioProjectSchema>;
 export type PortfolioFormValues = z.infer<typeof portfolioFormSchema>;
 export type ExperienceFormValues = z.infer<typeof experienceItemSchema>;
 export type EducationFormValues = z.infer<typeof educationItemSchema>;
+
+export const postSchema = z.object({
+  title: z.string().trim().min(1, 'Title is required').max(150, 'Title must be 150 characters or fewer'),
+  body: z.string().trim().min(1, 'Body is required').max(5000, 'Body must be 5000 characters or fewer'),
+});
+export type PostFormValues = z.infer<typeof postSchema>;

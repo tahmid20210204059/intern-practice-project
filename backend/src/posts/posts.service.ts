@@ -66,7 +66,11 @@ export class PostsService {
   async findAll(query: QueryPostsDto) {
     const page = query.page ?? 1;
     const limit = query.limit ?? 20;
-    const filter = { deletedAt: null };
+    const filter: Record<string, unknown> = { deletedAt: null };
+
+    if (query.authorId) {
+      filter.authorId = new Types.ObjectId(query.authorId);
+    }
 
     const [items, totalItems] = await Promise.all([
       this.postModel
