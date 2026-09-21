@@ -10,6 +10,7 @@ import { Post } from './schemas/post.schema.js';
 import { CreatePostDto } from './dto/create-post.dto.js';
 import { UpdatePostDto } from './dto/update-post.dto.js';
 import { QueryPostsDto } from './dto/query-posts.dto.js';
+import { NotificationsService } from '../notifications/notifications.service.js';
 
 const RETENTION_DAYS = 5;
 const RETENTION_MS = RETENTION_DAYS * 24 * 60 * 60 * 1000;
@@ -26,7 +27,10 @@ export interface PaginationMeta {
 
 @Injectable()
 export class PostsService {
-  constructor(@InjectModel(Post.name) private postModel: Model<Post>) {}
+  constructor(
+    @InjectModel(Post.name) private postModel: Model<Post>,
+    private notificationsService: NotificationsService,
+  ) {}
 
   private assertValidId(id: string) {
     if (!Types.ObjectId.isValid(id)) {
@@ -119,6 +123,15 @@ export class PostsService {
 
     post.deletedAt = new Date();
     await post.save();
+
+    const isOwnerDeleting = post.authorId.toString() === userId;
+    if (!isOwnerDeleting && role === 'admin') {
+      await this.notificationsService.create(
+        post.authorId.toString(),
+        `Your post "${post.title}" was removed by an admin.`,
+      );
+    }
+
     return { message: 'Post deleted successfully' };
   }
 

@@ -67,3 +67,29 @@ export async function apiCall<T = any>(path: string, options: RequestInit = {}, 
     return { success: false, statusCode: 0, message: 'Network error: could not reach server', errors: [] };
   }
 }
+
+export async function apiUpload<T = any>(path: string, formData: FormData, allowRetry = true): Promise<ApiResult<T>> {
+  const token = getAccessToken();
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${path}`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: formData,
+    });
+
+    if (res.status === 401 && allowRetry) {
+      const refreshed = await refreshAccessToken();
+      if (refreshed) {
+        return apiUpload<T>(path, formData, false);
+      }
+      clearSession();
+    }
+
+    return await res.json();
+  } catch {
+    return { success: false, statusCode: 0, message: 'Network error: could not reach server', errors: [] };
+  }
+}

@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { AlertCircle, PenSquare } from 'lucide-react';
+import { AlertCircle, PenSquare, RotateCw } from 'lucide-react';
 import { apiCall } from '@/lib/api';
 import { useFeed } from '@/lib/posts';
 import Navbar from '@/components/Navbar';
@@ -60,6 +60,11 @@ export default function FeedPage() {
 
   const posts = useMemo(() => data?.pages.flatMap((page) => page.items) ?? [], [data]);
 
+  const handleRefresh = async () => {
+    await refetch();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   if (viewerLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50">
@@ -78,13 +83,25 @@ export default function FeedPage() {
             <h1 className="text-2xl font-bold text-slate-900">Feed</h1>
             <p className="mt-1 text-sm text-slate-500">See what the community is sharing.</p>
           </div>
-          <Link
-            href="/posts/new"
-            className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
-          >
-            <PenSquare size={15} />
-            New Post
-          </Link>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleRefresh}
+              disabled={isRefetching}
+              aria-label="Refresh feed"
+              title="Refresh feed"
+              className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition hover:border-indigo-300 hover:text-indigo-600 disabled:opacity-60"
+            >
+              <RotateCw size={16} className={isRefetching ? 'animate-spin' : ''} />
+            </button>
+            <Link
+              href="/posts/new"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
+            >
+              <PenSquare size={15} />
+              New Post
+            </Link>
+          </div>
         </div>
 
         {isLoading && (

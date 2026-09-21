@@ -6,9 +6,14 @@ import { PostsController } from './posts.controller.js';
 import { PostsAdminController } from './posts-admin.controller.js';
 import { PostsCleanupService } from './posts-cleanup.service.js';
 import { AuthModule } from '../auth/auth.module.js';
+import { NotificationsModule } from '../notifications/notifications.module.js';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]), AuthModule],
+  imports: [
+    MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
+    AuthModule,
+    NotificationsModule,
+  ],
   controllers: [PostsController, PostsAdminController],
   providers: [PostsService, PostsCleanupService],
 })

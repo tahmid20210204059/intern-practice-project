@@ -45,7 +45,7 @@ export default function Signup() {
     },
     onSuccess: (data) => {
       saveSession(data.access_token, data.user);
-      router.push('/dashboard/user');
+      router.push('/feed');
     },
   });
 

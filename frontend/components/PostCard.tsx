@@ -13,6 +13,27 @@ interface PostCardProps {
   onDeleted?: () => void;
 }
 
+const URL_REGEX = /((?:https?:\/\/)[^\s]+)/g;
+
+function renderBodyWithLinks(text: string) {
+  return text.split(URL_REGEX).map((part, index) =>
+    /^https?:\/\//i.test(part) ? (
+      <a
+        key={index}
+        href={part}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={(e) => e.stopPropagation()}
+        className="break-all text-indigo-600 underline hover:text-indigo-700"
+      >
+        {part}
+      </a>
+    ) : (
+      <span key={index}>{part}</span>
+    ),
+  );
+}
+
 function timeAgo(dateString: string): string {
   const date = new Date(dateString);
   const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
@@ -117,13 +138,17 @@ export default function PostCard({ post, currentUserId, currentUserRole, variant
       <div className="mt-4">
         {variant === 'feed' ? (
           <Link href={`/posts/${post._id}`}>
-            <h2 className="text-base font-semibold text-slate-900 hover:text-indigo-600">{post.title}</h2>
+            <h2 className="break-words text-base font-semibold text-slate-900 hover:text-indigo-600">{post.title}</h2>
           </Link>
         ) : (
-          <h1 className="text-xl font-bold text-slate-900">{post.title}</h1>
+          <h1 className="break-words text-xl font-bold text-slate-900">{post.title}</h1>
         )}
-        <p className={`mt-2 whitespace-pre-line text-sm leading-relaxed text-slate-600 ${variant === 'feed' ? 'line-clamp-4' : ''}`}>
-          {post.body}
+        <p
+          className={`mt-2 min-w-0 overflow-hidden whitespace-pre-line break-words text-sm leading-relaxed text-slate-600 ${
+            variant === 'feed' ? 'line-clamp-4' : ''
+          }`}
+        >
+          {renderBodyWithLinks(post.body)}
         </p>
         {variant === 'feed' && post.body.length > 280 && (
           <Link href={`/posts/${post._id}`} className="mt-1 inline-block text-sm font-medium text-indigo-600 hover:underline">

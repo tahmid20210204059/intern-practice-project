@@ -7,6 +7,7 @@ import { AppService } from './app.service.js';
 import { HealthModule } from './health/health.module.js';
 import { ProfileModule } from './profile/profile.module.js';
 import { PostsModule } from './posts/posts.module.js';
+import { UploadsModule } from './uploads/uploads.module.js';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { PostsModule } from './posts/posts.module.js';
     HealthModule,
     ProfileModule,
     PostsModule,
+    UploadsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

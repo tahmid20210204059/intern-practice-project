@@ -20,7 +20,7 @@ import {
   ArrowUpRight,
   FileText,
 } from 'lucide-react';
-import { apiCall } from '@/lib/api';
+import { apiCall, apiUpload } from '@/lib/api';
 import Navbar from '@/components/Navbar';
 import SkillsEditor from '@/components/SkillsEditor';
 import ExperienceEditor from '@/components/ExperienceEditor';
@@ -103,6 +103,7 @@ export default function ProfilePage() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
+  const [avatarUploading, setAvatarUploading] = useState(false);
 
   const isAdmin = viewer?.role === 'admin';
   const canEdit = isOwnProfile || isAdmin;
@@ -137,7 +138,7 @@ export default function ProfilePage() {
     load();
   }, [id]);
 
-  const handleAvatarPick = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarPick = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith('image/')) {
@@ -148,9 +149,19 @@ export default function ProfilePage() {
       setAboutMessage({ type: 'error', text: 'Image must be smaller than 2MB.' });
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => setAboutForm((prev) => ({ ...prev, avatarUrl: reader.result as string }));
-    reader.readAsDataURL(file);
+
+    setAboutMessage(null);
+    setAvatarUploading(true);
+    const formData = new FormData();
+    formData.append('file', file);
+    const res = await apiUpload<{ url: string }>('/uploads/avatar', formData);
+    setAvatarUploading(false);
+
+    if (res.success) {
+      setAboutForm((prev) => ({ ...prev, avatarUrl: res.data.url }));
+    } else {
+      setAboutMessage({ type: 'error', text: res.message || 'Failed to upload image.' });
+    }
   };
 
   const handleAboutSave = async () => {
@@ -264,13 +275,26 @@ export default function ProfilePage() {
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-slate-900 text-white shadow hover:bg-slate-800"
+                    disabled={avatarUploading}
+                    className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-slate-900 text-white shadow hover:bg-slate-800 disabled:opacity-60"
                     aria-label="Change photo"
                   >
                     <Camera size={14} />
                   </button>
                 )}
-                <input ref={fileInputRef} type="file" accept="image/*" onChange={handleAvatarPick} className="hidden" />
+                {avatarUploading && (
+                  <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/50 text-[11px] font-medium text-white">
+                    Uploading...
+                  </div>
+                )}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleAvatarPick}
+                  disabled={avatarUploading}
+                  className="hidden"
+                />
               </div>
 
               <div className="flex items-center gap-2 pb-1">
@@ -358,7 +382,7 @@ export default function ProfilePage() {
                   <button
                     type="button"
                     onClick={handleAboutSave}
-                    disabled={aboutSaving}
+                    disabled={aboutSaving || avatarUploading}
                     className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-60"
                   >
                     {aboutSaving ? 'Saving...' : 'Save Changes'}

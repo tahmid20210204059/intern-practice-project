@@ -10,7 +10,7 @@ export default function Home() {
     const check = async () => {
       const res = await apiCall('/users/me');
       if (res.success) {
-        router.push(res.data.role === 'admin' ? '/dashboard/admin' : '/dashboard/user');
+        router.push('/feed');
       }
     };
     check();

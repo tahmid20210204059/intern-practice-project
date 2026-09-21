@@ -79,15 +79,8 @@ export class UsersService {
     }
 
     if (data.avatarUrl !== undefined) {
-      if (data.avatarUrl) {
-        if (!data.avatarUrl.startsWith('data:image/')) {
-          throw new BadRequestException('Avatar must be a valid image');
-        }
-        const base64Part = data.avatarUrl.split(',')[1] || '';
-        const sizeInBytes = Math.ceil((base64Part.length * 3) / 4);
-        if (sizeInBytes > 2 * 1024 * 1024) {
-          throw new BadRequestException('Avatar image must be smaller than 2MB');
-        }
+      if (data.avatarUrl && !/^https?:\/\/.+/i.test(data.avatarUrl)) {
+        throw new BadRequestException('Avatar must be a valid image URL');
       }
       update.avatarUrl = data.avatarUrl;
     }

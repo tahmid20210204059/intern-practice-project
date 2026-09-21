@@ -45,7 +45,7 @@ export default function Login() {
     },
     onSuccess: (data) => {
       saveSession(data.access_token, data.user);
-      router.push(data.user.role === 'admin' ? '/dashboard/admin' : '/dashboard/user');
+      router.push('/feed');
     },
   });
 
