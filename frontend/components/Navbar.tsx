@@ -1,8 +1,10 @@
 'use client';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import { apiCall } from '@/lib/api';
 import { clearSession } from '@/lib/auth';
+import { FEED_QUERY_KEY, useHasNewPosts, useMarkFeedSeen } from '@/lib/posts';
 import NotificationBell from './NotificationBell';
 
 interface NavbarProps {
@@ -13,12 +15,27 @@ interface NavbarProps {
 
 export default function Navbar({ name, role, avatarUrl }: NavbarProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const queryClient = useQueryClient();
   const dashboardHref = role === 'admin' ? '/dashboard/admin' : '/dashboard/user';
+  const hasNewPosts = useHasNewPosts();
+  const markFeedSeen = useMarkFeedSeen();
+
+  const isDashboardActive = pathname === dashboardHref;
+  const isFeedActive = pathname === '/feed';
 
   const handleLogout = async () => {
     await apiCall('/auth/logout', { method: 'POST' });
     clearSession();
     router.push('/login');
+  };
+
+  const handleFeedNavClick = () => {
+    markFeedSeen();
+    queryClient.resetQueries({ queryKey: FEED_QUERY_KEY });
+    if (pathname === '/feed') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   return (
@@ -28,8 +45,25 @@ export default function Navbar({ name, role, avatarUrl }: NavbarProps) {
           Dev<span className="text-indigo-600">Community</span>
         </Link>
         <nav className="flex items-center gap-5 text-sm font-medium text-slate-600">
-          <Link href={dashboardHref} className="hidden hover:text-indigo-600 sm:inline">Dashboard</Link>
-          <Link href="/feed" className="hidden hover:text-indigo-600 sm:inline">Feed</Link>
+          <Link
+            href={dashboardHref}
+            className={`hidden sm:inline ${isDashboardActive ? 'font-semibold text-indigo-600' : 'hover:text-indigo-600'}`}
+          >
+            Dashboard
+          </Link>
+          <Link
+            href="/feed"
+            onClick={handleFeedNavClick}
+            className={`relative hidden sm:inline-block ${isFeedActive ? 'font-semibold text-indigo-600' : 'hover:text-indigo-600'}`}
+          >
+            Feed
+            {hasNewPosts && (
+              <span
+                aria-label="New posts available"
+                className="absolute -right-2 -top-1 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white"
+              />
+            )}
+          </Link>
           <span
             className={`hidden items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium sm:inline-flex ${
               role === 'admin' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-indigo-200 bg-indigo-50 text-indigo-700'

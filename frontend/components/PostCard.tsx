@@ -16,22 +16,24 @@ interface PostCardProps {
 const URL_REGEX = /((?:https?:\/\/)[^\s]+)/g;
 
 function renderBodyWithLinks(text: string) {
-  return text.split(URL_REGEX).map((part, index) =>
-    /^https?:\/\//i.test(part) ? (
-      <a
-        key={index}
-        href={part}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={(e) => e.stopPropagation()}
-        className="break-all text-indigo-600 underline hover:text-indigo-700"
-      >
-        {part}
-      </a>
-    ) : (
-      <span key={index}>{part}</span>
-    ),
-  );
+  return text.split(URL_REGEX).map((part, index) => {
+    if (/^https?:\/\//i.test(part)) {
+      return (
+        <a
+          key={index}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
+          className="break-all text-indigo-600 underline hover:text-indigo-700"
+        >
+          {part}
+        </a>
+      );
+    }
+
+    return <span key={index}>{part}</span>;
+  });
 }
 
 function timeAgo(dateString: string): string {
@@ -154,6 +156,13 @@ export default function PostCard({ post, currentUserId, currentUserRole, variant
           <Link href={`/posts/${post._id}`} className="mt-1 inline-block text-sm font-medium text-indigo-600 hover:underline">
             Read more
           </Link>
+        )}
+        {post.imageUrl && (
+          <img
+            src={post.imageUrl}
+            alt=""
+            className="mt-3 max-h-[480px] w-full rounded-xl border border-slate-100 object-cover"
+          />
         )}
       </div>
 

@@ -11,7 +11,10 @@ import { UploadsModule } from './uploads/uploads.module.js';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ['.env', 'backend/.env', '../backend/.env'],
+    }),
     MongooseModule.forRoot(process.env.MONGO_URI as string),
     ScheduleModule.forRoot(),
     HealthModule,

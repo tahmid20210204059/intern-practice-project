@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString, Matches, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, Matches, MaxLength, ValidateIf } from 'class-validator';
 import {
   IsAfterOrEqualMonth,
   IsNotFutureMonth,
@@ -24,6 +24,7 @@ export class ExperienceItemDto {
   from: string;
 
   @IsOptional()
+  @ValidateIf((_, value) => value !== '')
   @IsString()
   @Matches(MONTH_REGEX, { message: 'End date must be in YYYY-MM format' })
   @IsAfterOrEqualMonth('from', { message: 'End date cannot be before the start date' })

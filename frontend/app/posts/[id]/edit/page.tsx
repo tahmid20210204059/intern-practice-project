@@ -97,7 +97,7 @@ export default function EditPostPage() {
         </div>
         <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
           <PostForm
-            defaultValues={{ title: post.title, body: post.body }}
+            defaultValues={{ title: post.title, body: post.body, imageUrl: post.imageUrl || '' }}
             onSubmit={handleSubmit}
             isSubmitting={updateMutation.isPending}
             submitLabel="Save Changes"

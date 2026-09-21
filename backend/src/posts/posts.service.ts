@@ -62,6 +62,7 @@ export class PostsService {
       authorId: new Types.ObjectId(authorId),
       title: dto.title.trim(),
       body: dto.body.trim(),
+      imageUrl: dto.imageUrl?.trim() || '',
     });
     await post.populate('authorId', AUTHOR_POPULATE_FIELDS);
     return post;
@@ -111,6 +112,7 @@ export class PostsService {
 
     if (dto.title !== undefined) post.title = dto.title.trim();
     if (dto.body !== undefined) post.body = dto.body.trim();
+    if (dto.imageUrl !== undefined) post.imageUrl = dto.imageUrl.trim();
 
     await post.save();
     await post.populate('authorId', AUTHOR_POPULATE_FIELDS);

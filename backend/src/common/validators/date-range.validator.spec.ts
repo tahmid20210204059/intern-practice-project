@@ -29,6 +29,18 @@ describe('date-range validator', () => {
     expect(validateSync(dto)).toHaveLength(0);
   });
 
+  it('allows an empty end date for a current experience', () => {
+    const dto = Object.assign(new ExperienceItemDto(), {
+      title: 'Engineer',
+      company: 'Acme',
+      from: '2026-01',
+      to: '',
+      description: 'ok',
+    });
+
+    expect(validateSync(dto)).toHaveLength(0);
+  });
+
   it('rejects an end date earlier than the start date', () => {
     const dto = Object.assign(new ExperienceItemDto(), {
       title: 'Engineer',

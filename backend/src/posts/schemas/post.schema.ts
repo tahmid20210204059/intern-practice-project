@@ -12,6 +12,9 @@ export class Post extends Document {
   @Prop({ required: true, maxlength: 5000 })
   body: string;
 
+  @Prop({ default: '' })
+  imageUrl: string;
+
   @Prop({ default: 0 })
   likeCount: number;
 

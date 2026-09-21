@@ -1,4 +1,4 @@
-import { IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsOptional, IsString, Matches, MaxLength } from 'class-validator';
 
 export class UpdatePostDto {
   @IsOptional()
@@ -10,4 +10,10 @@ export class UpdatePostDto {
   @IsString()
   @MaxLength(5000, { message: 'Body must be 5000 characters or fewer' })
   body?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(2048, { message: 'Image URL must be 2048 characters or fewer' })
+  @Matches(/^$|^https?:\/\/.+/i, { message: 'Image URL must be a valid URL' })
+  imageUrl?: string;
 }

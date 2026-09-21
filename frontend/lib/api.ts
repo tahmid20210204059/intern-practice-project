@@ -88,7 +88,12 @@ export async function apiUpload<T = any>(path: string, formData: FormData, allow
       clearSession();
     }
 
-    return await res.json();
+    const json = await res.json();
+    if (json?.success && json?.data && json.data.success !== undefined && json.data.data !== undefined) {
+      return json.data as ApiResult<T>;
+    }
+
+    return json;
   } catch {
     return { success: false, statusCode: 0, message: 'Network error: could not reach server', errors: [] };
   }

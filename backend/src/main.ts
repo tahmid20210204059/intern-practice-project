@@ -15,9 +15,24 @@ async function bootstrap() {
     res.header('Access-Control-Allow-Private-Network', 'true');
     next();
   });
+  const allowedOrigins = [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:3001',
+    'https://hoppscotch.io',
+  ];
+
+  const frontendUrl = process.env.FRONTEND_URL;
+  if (frontendUrl) {
+    allowedOrigins.push(frontendUrl);
+  }
+
   app.enableCors({
-    origin: [process.env.FRONTEND_URL || 'http://localhost:3000', 'https://hoppscotch.io'],
+    origin: allowedOrigins,
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   });
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
