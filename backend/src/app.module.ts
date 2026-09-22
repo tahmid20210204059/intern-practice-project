@@ -8,6 +8,7 @@ import { HealthModule } from './health/health.module.js';
 import { ProfileModule } from './profile/profile.module.js';
 import { PostsModule } from './posts/posts.module.js';
 import { UploadsModule } from './uploads/uploads.module.js';
+import { CommentsModule } from './comments/comments.module.js';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { UploadsModule } from './uploads/uploads.module.js';
     ProfileModule,
     PostsModule,
     UploadsModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -190,4 +190,16 @@ export class PostsService {
     const threshold = new Date(Date.now() - RETENTION_MS);
     return this.postModel.deleteMany({ deletedAt: { $ne: null, $lte: threshold } });
   }
+
+  async ensurePostExists(id: string): Promise<void> {
+    this.assertValidId(id);
+    const exists = await this.postModel.exists({ _id: id, deletedAt: null });
+    if (!exists) {
+      throw new NotFoundException('Post not found');
+    }
+  }
+
+  incrementCommentCount(id: string, delta: number) {
+    return this.postModel.updateOne({ _id: id }, { $inc: { commentCount: delta } }).exec();
+  }
 }

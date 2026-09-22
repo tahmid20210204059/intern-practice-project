@@ -16,5 +16,6 @@ import { NotificationsModule } from '../notifications/notifications.module.js';
   ],
   controllers: [PostsController, PostsAdminController],
   providers: [PostsService, PostsCleanupService],
+  exports: [PostsService],
 })
 export class PostsModule {}
