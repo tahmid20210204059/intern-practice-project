@@ -59,7 +59,7 @@ export class CommentsService {
 
     const comments = await this.commentModel
       .find({ postId: new Types.ObjectId(postId) })
-      .sort({ createdAt: 1 })
+      .sort({ createdAt: -1 })
       .populate('authorId', 'name avatarUrl')
       .lean();
 
@@ -108,7 +108,10 @@ export class CommentsService {
     if (!comment) throw new NotFoundException('Comment not found');
 
     const isOwner = comment.authorId.toString() === userId;
-    if (!isOwner && role !== 'admin') {
+    const postAuthorId = await this.postsService.getAuthorId(comment.postId.toString());
+    const isPostOwner = postAuthorId !== null && postAuthorId === userId;
+
+    if (!isOwner && !isPostOwner && role !== 'admin') {
       throw new ForbiddenException('You do not have permission to delete this comment');
     }
 

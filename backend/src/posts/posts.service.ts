@@ -200,6 +200,14 @@ export class PostsService {
   }
 
   incrementCommentCount(id: string, delta: number) {
-    return this.postModel.updateOne({ _id: id }, { $inc: { commentCount: delta } }).exec();
+    return this.postModel.updateOne({ _id: id }, { $inc: { commentCount: delta } }, { timestamps: false }).exec();
+  }
+
+  // Used by CommentsService to check post-owner delete permission on comments.
+  // No deletedAt filter — a comment on a since-deleted post can still be moderated.
+  async getAuthorId(id: string): Promise<string | null> {
+    if (!Types.ObjectId.isValid(id)) return null;
+    const post = await this.postModel.findById(id).select('authorId').lean();
+    return post ? post.authorId.toString() : null;
   }
 }

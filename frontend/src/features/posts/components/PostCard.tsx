@@ -1,9 +1,10 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
-import { Pencil, Trash2, MessageCircle, Heart } from 'lucide-react';
+import { Pencil, Trash2, MessageCircle, Heart, ChevronDown, ChevronUp } from 'lucide-react';
 import type { Post } from '@/features/posts/types';
 import { useDeletePost } from '@/features/posts/mutations/posts';
+import CommentsSection from '@/features/comments/components/CommentsSection';
 
 interface PostCardProps {
   post: Post;
@@ -52,11 +53,11 @@ function timeAgo(dateString: string): string {
 export default function PostCard({ post, currentUserId, currentUserRole, variant = 'feed', onDeleted }: PostCardProps) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteError, setDeleteError] = useState('');
+  const [commentsOpen, setCommentsOpen] = useState(variant === 'detail');
   const deleteMutation = useDeletePost();
 
   const isOwner = post.authorId?._id === currentUserId;
   const canManage = isOwner || currentUserRole === 'admin';
-  const isEdited = post.updatedAt !== post.createdAt;
   const authorName = post.authorId?.name || 'Unknown';
   const authorAvatar = post.authorId?.avatarUrl;
   const authorId = post.authorId?._id;
@@ -67,7 +68,7 @@ export default function PostCard({ post, currentUserId, currentUserRole, variant
       onSuccess: () => {
         onDeleted?.();
       },
-      onError: (err: any) => setDeleteError(err?.message || 'Failed to delete post.'),
+      onError: (err) => setDeleteError(err instanceof Error ? err.message : 'Failed to delete post.'),
     });
   };
 
@@ -86,7 +87,6 @@ export default function PostCard({ post, currentUserId, currentUserRole, variant
             <p className="text-sm font-semibold text-slate-900">{authorName}</p>
             <p className="text-xs text-slate-400">
               {timeAgo(post.createdAt)}
-              {isEdited ? ' · Edited' : ''}
             </p>
           </div>
         </Link>
@@ -171,11 +171,30 @@ export default function PostCard({ post, currentUserId, currentUserRole, variant
           <Heart size={14} />
           {post.likeCount}
         </span>
-        <span className="inline-flex items-center gap-1">
+        <button
+          type="button"
+          onClick={() => setCommentsOpen((prev) => !prev)}
+          aria-expanded={commentsOpen}
+          aria-label={commentsOpen ? 'Hide comments' : 'Show comments'}
+          className="inline-flex items-center gap-1 font-medium text-slate-500 transition hover:text-indigo-600"
+        >
           <MessageCircle size={14} />
           {post.commentCount}
-        </span>
+          {commentsOpen ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+        </button>
       </div>
+
+      {commentsOpen && (
+        <div className="mt-4 border-t border-slate-100 pt-4">
+          <CommentsSection
+            postId={post._id}
+            postAuthorId={authorId}
+            commentCount={post.commentCount}
+            currentUserId={currentUserId}
+            currentUserRole={currentUserRole}
+          />
+        </div>
+      )}
     </article>
   );
 }

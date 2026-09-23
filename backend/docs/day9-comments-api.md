@@ -17,8 +17,8 @@ total number of comments actually removed.
 
 ## Permissions
 - Create: any authenticated user.
-- Edit (PATCH): only the comment's author.
-- Delete: the comment's author OR an admin.
+- Edit (PATCH): only the comment's author. Post owner and admin cannot edit.
+- Delete: the comment's author, OR the owner of the post the comment belongs to, OR an admin.
 
 ## commentCount
 Incremented by 1 on create via atomic `$inc`.
@@ -26,6 +26,6 @@ Decremented by the exact deleted count (1 + descendants) on delete via atomic `$
 
 ## Endpoints
 - POST /comments { postId, parentCommentId?, body }
-- GET /comments/post/:postId -> nested tree, oldest first
+- GET /comments/post/:postId -> nested tree, newest first (top-level comments and each comment's replies)
 - PATCH /comments/:id { body }
 - DELETE /comments/:id
