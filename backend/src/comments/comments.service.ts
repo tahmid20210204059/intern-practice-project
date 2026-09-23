@@ -5,6 +5,7 @@ import { Comment } from './schemas/comment.schema.js';
 import { CreateCommentDto } from './dto/create-comment.dto.js';
 import { UpdateCommentDto } from './dto/update-comment.dto.js';
 import { PostsService } from '../posts/posts.service.js';
+import { NotificationsService } from '../notifications/notifications.service.js';
 
 export const MAX_COMMENT_DEPTH = 3;
 
@@ -13,6 +14,7 @@ export class CommentsService {
   constructor(
     @InjectModel(Comment.name) private commentModel: Model<Comment>,
     private postsService: PostsService,
+    private notificationsService: NotificationsService,
   ) {}
 
   private assertValidId(id: string, label = 'ID') {
@@ -25,9 +27,10 @@ export class CommentsService {
     await this.postsService.ensurePostExists(dto.postId);
 
     let depth = 0;
+    let parentComment: Comment | null = null;
 
     if (dto.parentCommentId) {
-      const parentComment = await this.commentModel.findById(dto.parentCommentId);
+      parentComment = await this.commentModel.findById(dto.parentCommentId);
       if (!parentComment) {
         throw new NotFoundException('Parent comment not found');
       }
@@ -50,6 +53,37 @@ export class CommentsService {
 
     await this.postsService.incrementCommentCount(dto.postId, 1);
     await comment.populate('authorId', 'name avatarUrl');
+
+    const actorName = (comment.authorId as any).name as string;
+
+    if (parentComment) {
+      const parentAuthorId = parentComment.authorId.toString();
+      const postAuthorId = await this.postsService.getAuthorId(dto.postId);
+
+      const recipients = new Map<string, string>();
+
+      if (parentAuthorId !== authorId) {
+        recipients.set(parentAuthorId, `${actorName} replied to your comment.`);
+      }
+      if (postAuthorId && postAuthorId !== authorId && !recipients.has(postAuthorId)) {
+        recipients.set(postAuthorId, `${actorName} commented on your post.`);
+      }
+
+      for (const [recipientId, message] of recipients) {
+        await this.notificationsService.create(recipientId, message, dto.postId, authorId);
+      }
+    } else {
+      const postAuthorId = await this.postsService.getAuthorId(dto.postId);
+      if (postAuthorId && postAuthorId !== authorId) {
+        await this.notificationsService.create(
+          postAuthorId,
+          `${actorName} commented on your post.`,
+          dto.postId,
+          authorId,
+        );
+      }
+    }
+
     return comment;
   }
 
@@ -120,6 +154,18 @@ export class CommentsService {
 
     await this.commentModel.deleteMany({ _id: { $in: idsToDelete } });
     await this.postsService.incrementCommentCount(comment.postId.toString(), -idsToDelete.length);
+
+    if (role === 'admin' && !isOwner) {
+      const postIdStr = comment.postId.toString();
+      const commentAuthorId = comment.authorId.toString();
+      const recipients = new Set<string>([commentAuthorId]);
+      if (postAuthorId && postAuthorId !== commentAuthorId) {
+        recipients.add(postAuthorId);
+      }
+      for (const recipientId of recipients) {
+        await this.notificationsService.create(recipientId, 'Your comment was removed by an admin.', postIdStr);
+      }
+    }
 
     return { message: 'Comment deleted successfully', deletedCount: idsToDelete.length };
   }

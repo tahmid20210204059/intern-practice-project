@@ -6,5 +6,7 @@ export class Notification extends Document {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true, index: true }) user: Types.ObjectId;
   @Prop({ required: true }) message: string;
   @Prop({ default: false }) read: boolean;
+  @Prop({ type: Types.ObjectId, ref: 'Post', default: null }) postId: Types.ObjectId | null;
+  @Prop({ type: Types.ObjectId, ref: 'User', default: null }) actorId: Types.ObjectId | null;
 }
 export const NotificationSchema = SchemaFactory.createForClass(Notification);

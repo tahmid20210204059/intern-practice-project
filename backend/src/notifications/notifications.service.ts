@@ -7,12 +7,25 @@ import { Notification } from './schemas/notification.schema.js';
 export class NotificationsService {
   constructor(@InjectModel(Notification.name) private notificationModel: Model<Notification>) {}
 
-  create(userId: string | Types.ObjectId, message: string) {
-    return this.notificationModel.create({ user: userId, message });
+  create(
+    userId: string | Types.ObjectId,
+    message: string,
+    postId?: string | Types.ObjectId,
+    actorId?: string | Types.ObjectId,
+  ) {
+    return this.notificationModel.create({
+      user: userId,
+      message,
+      postId: postId ?? null,
+      actorId: actorId ?? null,
+    });
   }
 
   findAllForUser(userId: string) {
-    return this.notificationModel.find({ user: userId }).sort({ createdAt: -1 });
+    return this.notificationModel
+      .find({ user: userId })
+      .sort({ createdAt: -1 })
+      .populate('actorId', 'name avatarUrl');
   }
 
   countUnread(userId: string) {
