@@ -5,6 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import type { ClientSession } from 'mongoose';
 import { Model, Types } from 'mongoose';
 import { Post } from './schemas/post.schema.js';
 import { CreatePostDto } from './dto/create-post.dto.js';
@@ -203,8 +204,12 @@ export class PostsService {
     return this.postModel.updateOne({ _id: id }, { $inc: { commentCount: delta } }, { timestamps: false }).exec();
   }
 
-  // Used by CommentsService to check post-owner delete permission on comments.
-  // No deletedAt filter — a comment on a since-deleted post can still be moderated.
+  incrementReactionCount(id: string, delta: number, session?: ClientSession) {
+    return this.postModel
+      .updateOne({ _id: id }, { $inc: { likeCount: delta } }, { timestamps: false, session })
+      .exec();
+  }
+
   async getAuthorId(id: string): Promise<string | null> {
     if (!Types.ObjectId.isValid(id)) return null;
     const post = await this.postModel.findById(id).select('authorId').lean();

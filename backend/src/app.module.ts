@@ -9,6 +9,7 @@ import { ProfileModule } from './profile/profile.module.js';
 import { PostsModule } from './posts/posts.module.js';
 import { UploadsModule } from './uploads/uploads.module.js';
 import { CommentsModule } from './comments/comments.module.js';
+import { ReactionsModule } from './reactions/reactions.module.js';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { CommentsModule } from './comments/comments.module.js';
     PostsModule,
     UploadsModule,
     CommentsModule,
+    ReactionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -17,6 +17,9 @@ export class Comment extends Document {
 
   @Prop({ required: true, default: 0 })
   depth: number;
+
+  @Prop({ required: true, default: 0 })
+  reactionCount: number;
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);

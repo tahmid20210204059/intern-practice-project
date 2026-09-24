@@ -1,5 +1,6 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import type { ClientSession } from 'mongoose';
 import { Model, Types } from 'mongoose';
 import { Comment } from './schemas/comment.schema.js';
 import { CreateCommentDto } from './dto/create-comment.dto.js';
@@ -188,5 +189,19 @@ export class CommentsService {
     }
 
     return descendants;
+  }
+
+  async ensureCommentExists(id: string): Promise<void> {
+    this.assertValidId(id, 'comment ID');
+    const exists = await this.commentModel.exists({ _id: id });
+    if (!exists) {
+      throw new NotFoundException('Comment not found');
+    }
+  }
+
+  incrementReactionCount(id: string, delta: number, session?: ClientSession) {
+    return this.commentModel
+      .updateOne({ _id: id }, { $inc: { reactionCount: delta } }, { timestamps: false, session })
+      .exec();
   }
 }
