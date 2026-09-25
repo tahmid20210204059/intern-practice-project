@@ -5,6 +5,7 @@ import ReplyForm from './ReplyForm';
 import EditCommentForm from './EditCommentForm';
 import CommentActionsMenu from './CommentActionsMenu';
 import DeleteConfirmPopover from './DeleteConfirmPopover';
+import ReactionButton from '@/features/reactions/components/ReactionButton';
 import { useDeleteComment } from '@/features/comments/mutations/comments';
 import type { Comment } from '@/features/comments/types';
 
@@ -157,16 +158,25 @@ function ReplyRow({
           />
         )}
 
-        {canReply && !replyOpen && !editOpen && !showDeleteConfirm && (
-          <button
-            type="button"
-            ref={replyButtonRef}
-            onClick={() => setReplyOpen(true)}
-            className="mt-1.5 text-xs font-semibold text-indigo-600 hover:underline"
-          >
-            Reply
-          </button>
-        )}
+        <div className="mt-1.5 flex items-center gap-3">
+          <ReactionButton
+            targetType="comment"
+            targetId={comment._id}
+            postId={postId}
+            count={comment.reactionCount ?? 0}
+            size="sm"
+          />
+          {canReply && !replyOpen && !editOpen && !showDeleteConfirm && (
+            <button
+              type="button"
+              ref={replyButtonRef}
+              onClick={() => setReplyOpen(true)}
+              className="text-xs font-semibold text-indigo-600 hover:underline"
+            >
+              Reply
+            </button>
+          )}
+        </div>
 
         {replyOpen && (
           <ReplyForm
@@ -278,6 +288,14 @@ export default function CommentItem({ comment, postId, postAuthorId, currentUser
           )}
 
           <div className="mt-1.5 flex items-center gap-3">
+            <ReactionButton
+              targetType="comment"
+              targetId={comment._id}
+              postId={postId}
+              count={comment.reactionCount ?? 0}
+              size="sm"
+            />
+
             {canReply && !replyOpen && !editOpen && !showDeleteConfirm && (
               <button
                 type="button"

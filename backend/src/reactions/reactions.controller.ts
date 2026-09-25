@@ -27,4 +27,19 @@ export class ReactionsController {
   getMyReaction(@Req() req: any, @Query() query: GetMyReactionDto) {
     return this.reactionsService.getMyReaction(req.user.userId, query.targetType, query.targetId);
   }
+
+  @Get()
+  @ApiQuery({ name: 'targetType', enum: ReactionTargetType })
+  @ApiQuery({ name: 'targetId', type: String })
+  @ApiOkResponse({
+    schema: {
+      example: {
+        success: true,
+        data: [{ type: 'like', createdAt: '2024-01-01T00:00:00.000Z', user: { _id: '65f...', name: 'Jane', avatarUrl: '' } }],
+      },
+    },
+  })
+  listReactions(@Query() query: GetMyReactionDto) {
+    return this.reactionsService.listForTarget(query.targetType, query.targetId);
+  }
 }

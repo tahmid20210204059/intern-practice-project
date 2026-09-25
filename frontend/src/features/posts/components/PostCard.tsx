@@ -1,10 +1,11 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
-import { Pencil, Trash2, MessageCircle, Heart, ChevronDown, ChevronUp } from 'lucide-react';
+import { Pencil, Trash2, MessageCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import type { Post } from '@/features/posts/types';
 import { useDeletePost } from '@/features/posts/mutations/posts';
 import CommentsSection from '@/features/comments/components/CommentsSection';
+import ReactionButton from '@/features/reactions/components/ReactionButton';
 
 interface PostCardProps {
   post: Post;
@@ -167,10 +168,7 @@ export default function PostCard({ post, currentUserId, currentUserRole, variant
       </div>
 
       <div className="mt-4 flex items-center gap-4 border-t border-slate-100 pt-3 text-xs text-slate-400">
-        <span className="inline-flex items-center gap-1">
-          <Heart size={14} />
-          {post.likeCount}
-        </span>
+        <ReactionButton targetType="post" targetId={post._id} count={post.likeCount} />
         <button
           type="button"
           onClick={() => setCommentsOpen((prev) => !prev)}

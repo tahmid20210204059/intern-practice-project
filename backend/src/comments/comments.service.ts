@@ -199,6 +199,18 @@ export class CommentsService {
     }
   }
 
+  /**
+   * Returns the comment's authorId and the postId it belongs to, so a
+   * reaction on a comment (or reply — a reply is just a comment with
+   * depth > 0) can notify the correct owner and link back to the post.
+   */
+  async getOwnerAndPostId(id: string): Promise<{ authorId: string; postId: string } | null> {
+    if (!Types.ObjectId.isValid(id)) return null;
+    const comment = await this.commentModel.findById(id).select('authorId postId').lean();
+    if (!comment) return null;
+    return { authorId: comment.authorId.toString(), postId: comment.postId.toString() };
+  }
+
   incrementReactionCount(id: string, delta: number, session?: ClientSession) {
     return this.commentModel
       .updateOne({ _id: id }, { $inc: { reactionCount: delta } }, { timestamps: false, session })

@@ -11,6 +11,7 @@ export interface Comment {
   parentCommentId: string | null;
   body: string;
   depth: number;
+  reactionCount?: number;
   replies: Comment[];
   createdAt: string;
   updatedAt: string;
