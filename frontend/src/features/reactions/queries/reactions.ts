@@ -45,5 +45,6 @@ export function useReactionsList(targetType: ReactionTargetType, targetId: strin
     queryFn: () => fetchReactionsList(targetType, targetId),
     enabled: enabled && !!targetId,
     staleTime: 10000,
+    refetchInterval: enabled ? 6000 : false,
   });
 }

@@ -18,6 +18,9 @@ interface NotificationItem {
   actorId?: NotificationActor | null;
 }
 
+const UNREAD_COUNT_POLL_MS = 10000;
+const OPEN_LIST_POLL_MS = 8000;
+
 function timeAgo(dateString: string): string {
   const date = new Date(dateString);
   const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
@@ -44,18 +47,27 @@ export default function NotificationBell() {
     if (res.success) setUnreadCount(res.data);
   };
 
-  const loadNotifications = async () => {
-    setLoading(true);
+  const loadNotifications = async (showSpinner = true) => {
+    if (showSpinner) setLoading(true);
     const res = await apiCall('/notifications');
-    setLoading(false);
+    if (showSpinner) setLoading(false);
     if (res.success) setNotifications(res.data);
   };
 
   useEffect(() => {
     loadUnreadCount();
-    const interval = setInterval(loadUnreadCount, 20000);
+    const interval = setInterval(loadUnreadCount, UNREAD_COUNT_POLL_MS);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    const interval = setInterval(() => {
+      loadNotifications(false);
+      loadUnreadCount();
+    }, OPEN_LIST_POLL_MS);
+    return () => clearInterval(interval);
+  }, [open]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {

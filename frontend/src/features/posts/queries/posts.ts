@@ -9,6 +9,8 @@ export const postQueryKey = (id: string) => ['posts', 'detail', id] as const;
 export const userPostsQueryKey = (authorId: string) => ['posts', 'user', authorId] as const;
 const LATEST_PEEK_QUERY_KEY = ['posts', 'latest-peek'] as const;
 
+const LIVE_REFRESH_INTERVAL_MS = 8000;
+
 export const isPostListQuery = (query: Query) => query.queryKey[0] === 'posts' && (query.queryKey[1] === 'feed' || query.queryKey[1] === 'user');
 
 export async function fetchFeed(page: number, authorId?: string): Promise<FeedPage> {
@@ -31,6 +33,8 @@ export function useFeed() {
     queryFn: ({ pageParam }) => fetchFeed(pageParam as number),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => (lastPage.pagination.hasNextPage ? lastPage.pagination.page + 1 : undefined),
+    refetchInterval: LIVE_REFRESH_INTERVAL_MS,
+    refetchOnWindowFocus: true,
   });
 }
 
@@ -41,6 +45,8 @@ export function useUserPosts(authorId: string) {
     initialPageParam: 1,
     getNextPageParam: (lastPage) => (lastPage.pagination.hasNextPage ? lastPage.pagination.page + 1 : undefined),
     enabled: !!authorId,
+    refetchInterval: LIVE_REFRESH_INTERVAL_MS,
+    refetchOnWindowFocus: true,
   });
 }
 
@@ -49,6 +55,8 @@ export function usePost(id: string) {
     queryKey: postQueryKey(id),
     queryFn: () => fetchPost(id),
     enabled: !!id,
+    refetchInterval: LIVE_REFRESH_INTERVAL_MS,
+    refetchOnWindowFocus: true,
   });
 }
 
