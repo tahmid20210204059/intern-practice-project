@@ -1,10 +1,10 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
 import { PostsService } from './posts.service.js';
 import { CreatePostDto } from './dto/create-post.dto.js';
 import { UpdatePostDto } from './dto/update-post.dto.js';
-import { QueryPostsDto } from './dto/query-posts.dto.js';
+import { QueryPostsDto, PostSortOption } from './dto/query-posts.dto.js';
 
 @ApiTags('Posts')
 @ApiBearerAuth()
@@ -20,6 +20,7 @@ export class PostsController {
   }
 
   @Get()
+  @ApiQuery({ name: 'sort', enum: PostSortOption, required: false, description: 'latest (default), ranked, or discussed' })
   findAll(@Query() query: QueryPostsDto) {
     return this.postsService.findAll(query);
   }

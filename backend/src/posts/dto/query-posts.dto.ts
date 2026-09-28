@@ -1,5 +1,11 @@
 import { Type } from 'class-transformer';
-import { IsInt, IsMongoId, IsOptional, Max, Min } from 'class-validator';
+import { IsEnum, IsInt, IsMongoId, IsOptional, Max, Min } from 'class-validator';
+
+export enum PostSortOption {
+  LATEST = 'latest',
+  RANKED = 'ranked',
+  DISCUSSED = 'discussed',
+}
 
 export class QueryPostsDto {
   @IsOptional()
@@ -18,4 +24,8 @@ export class QueryPostsDto {
   @IsOptional()
   @IsMongoId({ message: 'authorId must be a valid ID' })
   authorId?: string;
+
+  @IsOptional()
+  @IsEnum(PostSortOption, { message: 'sort must be one of: latest, ranked, discussed' })
+  sort?: PostSortOption = PostSortOption.LATEST;
 }

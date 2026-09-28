@@ -5,13 +5,14 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import type { ClientSession } from 'mongoose';
+import type { ClientSession, PipelineStage } from 'mongoose';
 import { Model, Types } from 'mongoose';
 import { Post } from './schemas/post.schema.js';
 import { CreatePostDto } from './dto/create-post.dto.js';
 import { UpdatePostDto } from './dto/update-post.dto.js';
-import { QueryPostsDto } from './dto/query-posts.dto.js';
+import { QueryPostsDto, PostSortOption } from './dto/query-posts.dto.js';
 import { NotificationsService } from '../notifications/notifications.service.js';
+import { buildRankScoreAggregationStage } from './ranking.js';
 
 const RETENTION_DAYS = 5;
 const RETENTION_MS = RETENTION_DAYS * 24 * 60 * 60 * 1000;
@@ -72,21 +73,79 @@ export class PostsService {
   async findAll(query: QueryPostsDto) {
     const page = query.page ?? 1;
     const limit = query.limit ?? 20;
+    const sort = query.sort ?? PostSortOption.LATEST;
     const filter: Record<string, unknown> = { deletedAt: null };
 
     if (query.authorId) {
       filter.authorId = new Types.ObjectId(query.authorId);
     }
 
+    if (sort === PostSortOption.RANKED) {
+      return this.findAllRanked(filter, page, limit);
+    }
+
+    const sortSpec: Record<string, 1 | -1> =
+      sort === PostSortOption.DISCUSSED
+        ? { commentCount: -1, createdAt: -1, _id: -1 }
+        : { createdAt: -1, _id: -1 };
+
     const [items, totalItems] = await Promise.all([
       this.postModel
         .find(filter)
-        .sort({ createdAt: -1 })
+        .sort(sortSpec)
         .skip((page - 1) * limit)
         .limit(limit)
         .populate('authorId', AUTHOR_POPULATE_FIELDS),
       this.postModel.countDocuments(filter),
     ]);
+
+    return { items, pagination: this.buildPaginationMeta(page, limit, totalItems) };
+  }
+
+  private async findAllRanked(filter: Record<string, unknown>, page: number, limit: number) {
+    const pipeline: PipelineStage[] = [
+      { $match: filter },
+      buildRankScoreAggregationStage(),
+      { $sort: { rankScore: -1, createdAt: -1, _id: -1 } },
+      {
+        $facet: {
+          metadata: [{ $count: 'total' }],
+          data: [
+            { $skip: (page - 1) * limit },
+            { $limit: limit },
+            {
+              $lookup: {
+                from: 'users',
+                localField: 'authorId',
+                foreignField: '_id',
+                as: 'authorId',
+              },
+            },
+            { $unwind: '$authorId' },
+            {
+              $project: {
+                title: 1,
+                body: 1,
+                imageUrl: 1,
+                likeCount: 1,
+                commentCount: 1,
+                deletedAt: 1,
+                createdAt: 1,
+                updatedAt: 1,
+                rankScore: 1,
+                'authorId._id': 1,
+                'authorId.name': 1,
+                'authorId.avatarUrl': 1,
+              },
+            },
+          ],
+        },
+      },
+    ];
+
+    const [result] = await this.postModel.aggregate(pipeline).exec();
+    const items = result?.data ?? [];
+    const totalItems = result?.metadata?.[0]?.total ?? 0;
 
     return { items, pagination: this.buildPaginationMeta(page, limit, totalItems) };
   }
@@ -168,7 +227,7 @@ export class PostsService {
     const [items, totalItems] = await Promise.all([
       this.postModel
         .find(filter)
-        .sort({ deletedAt: -1 })
+        .sort({ deletedAt: -1, _id: -1 })
         .skip((page - 1) * limit)
         .limit(limit)
         .populate('authorId', AUTHOR_POPULATE_FIELDS),
