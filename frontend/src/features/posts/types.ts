@@ -1,5 +1,7 @@
 import type { PostFormValues } from './schemas/post';
 
+export type FeedSort = 'ranked' | 'latest' | 'discussed';
+
 export interface PostAuthor {
   _id: string;
   name: string;
@@ -14,6 +16,7 @@ export interface Post {
   imageUrl?: string;
   likeCount: number;
   commentCount: number;
+  rankScore?: number;
   deletedAt: string | null;
   createdAt: string;
   updatedAt: string;

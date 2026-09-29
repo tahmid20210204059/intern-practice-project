@@ -1,10 +1,12 @@
 import { useInfiniteQuery, useQuery, type Query } from '@tanstack/react-query';
 import { useSyncExternalStore } from 'react';
 import { apiCall } from '@/lib/http/client';
-import type { FeedPage, Post } from '../types';
+import type { FeedPage, FeedSort, Post } from '../types';
+import { DEFAULT_FEED_SORT, FEED_SORT_PARAM } from '../constants';
 
 const FEED_PAGE_SIZE = 10;
 export const FEED_QUERY_KEY = ['posts', 'feed'] as const;
+export const feedQueryKey = (sort: FeedSort) => [...FEED_QUERY_KEY, sort] as const;
 export const postQueryKey = (id: string) => ['posts', 'detail', id] as const;
 export const userPostsQueryKey = (authorId: string) => ['posts', 'user', authorId] as const;
 const LATEST_PEEK_QUERY_KEY = ['posts', 'latest-peek'] as const;
@@ -13,9 +15,10 @@ const LIVE_REFRESH_INTERVAL_MS = 8000;
 
 export const isPostListQuery = (query: Query) => query.queryKey[0] === 'posts' && (query.queryKey[1] === 'feed' || query.queryKey[1] === 'user');
 
-export async function fetchFeed(page: number, authorId?: string): Promise<FeedPage> {
+export async function fetchFeed(page: number, authorId?: string, sort?: FeedSort): Promise<FeedPage> {
   const params = new URLSearchParams({ page: String(page), limit: String(FEED_PAGE_SIZE) });
   if (authorId) params.set('authorId', authorId);
+  if (sort) params.set(FEED_SORT_PARAM, sort);
   const res = await apiCall<FeedPage>(`/posts?${params.toString()}`);
   if (!res.success) throw new Error(res.message || 'Failed to load feed');
   return res.data;
@@ -27,10 +30,10 @@ export async function fetchPost(id: string): Promise<Post> {
   return res.data;
 }
 
-export function useFeed() {
+export function useFeed(sort: FeedSort = DEFAULT_FEED_SORT) {
   return useInfiniteQuery({
-    queryKey: FEED_QUERY_KEY,
-    queryFn: ({ pageParam }) => fetchFeed(pageParam as number),
+    queryKey: feedQueryKey(sort),
+    queryFn: ({ pageParam }) => fetchFeed(pageParam as number, undefined, sort),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => (lastPage.pagination.hasNextPage ? lastPage.pagination.page + 1 : undefined),
     refetchInterval: LIVE_REFRESH_INTERVAL_MS,

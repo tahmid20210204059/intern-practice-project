@@ -1,16 +1,30 @@
 'use client';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { AlertCircle, PenSquare } from 'lucide-react';
 import { apiCall } from '@/lib/http/client';
 import { useFeed, setSeenPostId } from '@/features/posts/queries/posts';
+import { FEED_SORT_PARAM, isFeedSort, parseFeedSort } from '@/features/posts/constants';
+import type { Post } from '@/features/posts/types';
 import Navbar from '@/components/layout/Navbar';
 import PostCard from '@/features/posts/components/PostCard';
 import PostCardSkeleton from '@/features/posts/components/PostCardSkeleton';
+import FeedTabs from '@/features/posts/components/FeedTabs';
 
-export default function FeedPage() {
+function FeedLoading() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-slate-50">
+      <p className="text-sm font-medium text-slate-500">Loading...</p>
+    </div>
+  );
+}
+
+function FeedContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const rawSort = searchParams.get(FEED_SORT_PARAM);
+  const sort = parseFeedSort(rawSort);
   const [viewer, setViewer] = useState<any>(null);
   const [viewerLoading, setViewerLoading] = useState(true);
   const loadMoreRef = useRef<HTMLDivElement>(null);
@@ -28,6 +42,12 @@ export default function FeedPage() {
     load();
   }, []);
 
+  useEffect(() => {
+    if (rawSort !== null && !isFeedSort(rawSort)) {
+      router.replace('/feed');
+    }
+  }, [rawSort, router]);
+
   const {
     data,
     isLoading,
@@ -38,7 +58,7 @@ export default function FeedPage() {
     isFetchingNextPage,
     refetch,
     isRefetching,
-  } = useFeed();
+  } = useFeed(sort);
 
   useEffect(() => {
     const node = loadMoreRef.current;
@@ -58,20 +78,28 @@ export default function FeedPage() {
     return () => observer.disconnect();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  const posts = useMemo(() => data?.pages.flatMap((page) => page.items) ?? [], [data]);
+  const posts = useMemo(() => {
+    const seen = new Set<string>();
+    const list: Post[] = [];
+    for (const page of data?.pages ?? []) {
+      for (const post of page.items) {
+        if (!seen.has(post._id)) {
+          seen.add(post._id);
+          list.push(post);
+        }
+      }
+    }
+    return list;
+  }, [data]);
 
   useEffect(() => {
-    if (posts.length > 0) {
+    if (sort === 'latest' && posts.length > 0) {
       setSeenPostId(posts[0]._id);
     }
-  }, [posts]);
+  }, [posts, sort]);
 
   if (viewerLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50">
-        <p className="text-sm font-medium text-slate-500">Loading...</p>
-      </div>
-    );
+    return <FeedLoading />;
   }
 
   return (
@@ -92,6 +120,8 @@ export default function FeedPage() {
             New Post
           </Link>
         </div>
+
+        <FeedTabs active={sort} />
 
         {isLoading && (
           <div className="space-y-4">
@@ -151,5 +181,13 @@ export default function FeedPage() {
         )}
       </main>
     </div>
+  );
+}
+
+export default function FeedPage() {
+  return (
+    <Suspense fallback={<FeedLoading />}>
+      <FeedContent />
+    </Suspense>
   );
 }
