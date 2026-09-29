@@ -1,5 +1,5 @@
 'use client';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { FEED_SORT_OPTIONS, feedSortHref } from '@/features/posts/constants';
 import type { FeedSort } from '@/features/posts/types';
 
@@ -8,24 +8,30 @@ interface FeedTabsProps {
 }
 
 export default function FeedTabs({ active }: FeedTabsProps) {
+  const router = useRouter();
+
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value as FeedSort;
+    router.push(feedSortHref(value), { scroll: false });
+  };
+
   return (
-    <nav aria-label="Feed filters" className="mb-5 flex gap-1 rounded-xl bg-white p-1 ring-1 ring-slate-200">
-      {FEED_SORT_OPTIONS.map((option) => {
-        const isActive = option.value === active;
-        return (
-          <Link
-            key={option.value}
-            href={feedSortHref(option.value)}
-            scroll={false}
-            aria-current={isActive ? 'page' : undefined}
-            className={`flex-1 rounded-lg px-3 py-2 text-center text-sm font-semibold transition ${
-              isActive ? 'bg-indigo-600 text-white' : 'text-slate-600 hover:bg-slate-100'
-            }`}
-          >
+    <div className="mb-5">
+      <label htmlFor="feed-sort" className="sr-only">
+        Sort feed by
+      </label>
+      <select
+        id="feed-sort"
+        value={active}
+        onChange={handleChange}
+        className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 sm:w-56"
+      >
+        {FEED_SORT_OPTIONS.map((option) => (
+          <option key={option.value} value={option.value}>
             {option.label}
-          </Link>
-        );
-      })}
-    </nav>
+          </option>
+        ))}
+      </select>
+    </div>
   );
 }
