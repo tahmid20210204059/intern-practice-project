@@ -45,18 +45,18 @@ export default function NewPostPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-white">
       <Navbar name={viewer.name} role={viewer.role} avatarUrl={viewer.avatarUrl} />
-      <main className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
-        <Link href="/feed" className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-indigo-600">
+      <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
+        <Link href="/feed" className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-brand">
           <ArrowLeft size={15} />
           Back to feed
         </Link>
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-slate-900">Create Post</h1>
+          <h1 className="text-xl font-bold text-slate-900">Create Post</h1>
           <p className="mt-1 text-sm text-slate-500">Share an update, question, or resource with the community.</p>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <div className="rounded-lg border border-slate-200 bg-white p-6 sm:p-8">
           <PostForm
             onSubmit={handleSubmit}
             isSubmitting={createMutation.isPending}

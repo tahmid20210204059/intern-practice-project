@@ -72,7 +72,7 @@ export default function PortfolioProjectRow({ control, register, index, errors, 
           <input
             {...register(`portfolioProjects.${index}.title`)}
             placeholder="e.g. Dev Community Platform"
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
           />
           {projectErrors?.title && <p className="mt-1 text-xs text-red-600">{projectErrors.title.message}</p>}
         </div>
@@ -84,7 +84,7 @@ export default function PortfolioProjectRow({ control, register, index, errors, 
             rows={2}
             maxLength={500}
             placeholder="What does this project do?"
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
           />
           {projectErrors?.description && (
             <p className="mt-1 text-xs text-red-600">{projectErrors.description.message}</p>
@@ -96,7 +96,7 @@ export default function PortfolioProjectRow({ control, register, index, errors, 
           <input
             {...register(`portfolioProjects.${index}.urls.live`)}
             placeholder="https://example.com"
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
           />
           {projectErrors?.urls?.live && (
             <p className="mt-1 text-xs text-red-600">{projectErrors.urls.live.message}</p>
@@ -108,7 +108,7 @@ export default function PortfolioProjectRow({ control, register, index, errors, 
           <input
             {...register(`portfolioProjects.${index}.urls.github`)}
             placeholder="https://github.com/username/repo"
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
           />
           {projectErrors?.urls?.github && (
             <p className="mt-1 text-xs text-red-600">{projectErrors.urls.github.message}</p>
@@ -120,7 +120,7 @@ export default function PortfolioProjectRow({ control, register, index, errors, 
           <input
             type="month"
             {...register(`portfolioProjects.${index}.from`)}
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
           />
           {projectErrors?.from && <p className="mt-1 text-xs text-red-600">{projectErrors.from.message}</p>}
         </div>
@@ -131,7 +131,7 @@ export default function PortfolioProjectRow({ control, register, index, errors, 
             type="month"
             disabled={!!isCurrent}
             {...register(`portfolioProjects.${index}.to`)}
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-100 disabled:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-100 disabled:text-slate-400 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
           />
           {projectErrors?.to && <p className="mt-1 text-xs text-red-600">{projectErrors.to.message}</p>}
           <label className="mt-1.5 flex items-center gap-1.5 text-xs text-slate-500">
@@ -151,13 +151,13 @@ export default function PortfolioProjectRow({ control, register, index, errors, 
           {techFields.map((field, techIndex) => (
             <span
               key={field.id}
-              className="flex items-center gap-1.5 rounded-full bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-700"
+              className="flex items-center gap-1.5 rounded-full bg-brand/10 px-3 py-1 text-sm font-medium text-brand"
             >
               {field.value}
               <button
                 type="button"
                 onClick={() => removeTech(techIndex)}
-                className="text-indigo-400 hover:text-indigo-700"
+                className="text-brand hover:text-brand"
                 aria-label={`Remove ${field.value}`}
               >
                 ×
@@ -176,7 +176,7 @@ export default function PortfolioProjectRow({ control, register, index, errors, 
               }
             }}
             placeholder="Add a tool and press Enter"
-            className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+            className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
           />
           <button
             type="button"

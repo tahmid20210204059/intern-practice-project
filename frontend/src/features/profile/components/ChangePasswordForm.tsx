@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 import { apiCall } from '@/lib/http/client';
 import { getPasswordError } from '@/features/profile/utils/validators';
 
@@ -51,7 +52,7 @@ export default function ChangePasswordForm() {
   return (
     <form onSubmit={handleSubmit} autoComplete="off" className="space-y-3">
       {error && <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">{error}</p>}
-      {success && <p className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-600">{success}</p>}
+      {success && <p className="rounded-lg bg-brand/10 px-3 py-2 text-sm text-brand">{success}</p>}
 
       <div>
         <label className="mb-1 block text-xs font-medium text-slate-500">Current password</label>
@@ -61,7 +62,7 @@ export default function ChangePasswordForm() {
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
             autoComplete="current-password"
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 pr-10 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+            className="w-full rounded-lg border border-slate-300 px-3 py-2 pr-10 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
           />
           <button
             type="button"
@@ -69,7 +70,7 @@ export default function ChangePasswordForm() {
             aria-label={showCurrent ? 'Hide password' : 'Show password'}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
           >
-            {showCurrent ? '🙈' : '👁️'}
+            {showCurrent ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
         </div>
       </div>
@@ -82,7 +83,7 @@ export default function ChangePasswordForm() {
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             autoComplete="new-password"
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 pr-10 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+            className="w-full rounded-lg border border-slate-300 px-3 py-2 pr-10 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
           />
           <button
             type="button"
@@ -90,7 +91,7 @@ export default function ChangePasswordForm() {
             aria-label={showNew ? 'Hide password' : 'Show password'}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
           >
-            {showNew ? '🙈' : '👁️'}
+            {showNew ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
         </div>
         <p className="mt-1 text-xs text-slate-400">Min 8 characters, with uppercase, lowercase, and a number.</p>
@@ -103,14 +104,14 @@ export default function ChangePasswordForm() {
           value={confirmNewPassword}
           onChange={(e) => setConfirmNewPassword(e.target.value)}
           autoComplete="new-password"
-          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
         />
       </div>
 
       <button
         type="submit"
         disabled={saving}
-        className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-60"
+        className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-dark disabled:opacity-60"
       >
         {saving ? 'Updating...' : 'Update Password'}
       </button>

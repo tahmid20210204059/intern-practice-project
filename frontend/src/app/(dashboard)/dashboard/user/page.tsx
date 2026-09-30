@@ -45,23 +45,23 @@ export default function UserDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-white">
       <Navbar name={profile.name} role={profile.role} avatarUrl={profile.avatarUrl} />
 
       <main className="mx-auto max-w-4xl px-6 py-10">
-        <div className="rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 p-8 text-white shadow-sm">
-          <h1 className="text-2xl font-bold">Welcome back, {profile.name.split(' ')[0]}</h1>
-          <p className="mt-1 text-indigo-100">
+        <div className="rounded-lg border border-slate-200 bg-white p-6">
+          <h1 className="text-xl font-bold text-slate-900">Welcome back, {profile.name.split(' ')[0]}</h1>
+          <p className="mt-1 text-slate-600">
             Keep your profile up to date so other developers can find and connect with you.
           </p>
         </div>
 
         <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-100">
+          <div className="rounded-lg border border-slate-200 bg-white p-6">
             <p className="text-sm font-medium text-slate-500">Skills listed</p>
             <p className="mt-1 text-3xl font-bold text-slate-900">{profile.skills?.length || 0}</p>
           </div>
-          <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-100">
+          <div className="rounded-lg border border-slate-200 bg-white p-6">
             <p className="text-sm font-medium text-slate-500">Experience entries</p>
             <p className="mt-1 text-3xl font-bold text-slate-900">{profile.experiences?.length || 0}</p>
           </div>

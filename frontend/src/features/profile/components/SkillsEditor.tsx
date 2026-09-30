@@ -47,13 +47,13 @@ export default function SkillsEditor({ skills, onSave, onCancel }: SkillsEditorP
         {localSkills.map((skill) => (
           <span
             key={skill}
-            className="flex items-center gap-1.5 rounded-full bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-700"
+            className="flex items-center gap-1.5 rounded-full bg-brand/10 px-3 py-1 text-sm font-medium text-brand"
           >
             {skill}
             <button
               type="button"
               onClick={() => removeSkill(skill)}
-              className="text-indigo-400 hover:text-indigo-700"
+              className="text-brand hover:text-brand"
               aria-label={`Remove ${skill}`}
             >
               ×
@@ -73,7 +73,7 @@ export default function SkillsEditor({ skills, onSave, onCancel }: SkillsEditorP
             }
           }}
           placeholder="Add a skill and press Enter"
-          className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+          className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
         />
         <button
           type="button"
@@ -85,7 +85,7 @@ export default function SkillsEditor({ skills, onSave, onCancel }: SkillsEditorP
       </div>
 
       {message && (
-        <p className={`mt-3 text-sm ${message.type === 'success' ? 'text-emerald-600' : 'text-red-600'}`}>
+        <p className={`mt-3 text-sm ${message.type === 'success' ? 'text-brand' : 'text-red-600'}`}>
           {message.text}
         </p>
       )}
@@ -95,7 +95,7 @@ export default function SkillsEditor({ skills, onSave, onCancel }: SkillsEditorP
           type="button"
           onClick={handleSave}
           disabled={saving}
-          className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-60"
+          className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-dark disabled:opacity-60"
         >
           {saving ? 'Saving...' : 'Save Skills'}
         </button>

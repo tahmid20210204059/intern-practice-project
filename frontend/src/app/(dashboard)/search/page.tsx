@@ -28,11 +28,11 @@ export default function SearchPage() {
     );
   }
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-white">
       <Navbar name={viewer.name} role={viewer.role} avatarUrl={viewer.avatarUrl} />
-      <main className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
+      <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-slate-900">Search</h1>
+          <h1 className="text-xl font-bold text-slate-900">Search</h1>
           <p className="mt-1 text-sm text-slate-500">Find posts across the community.</p>
         </div>
         <PostSearch currentUserId={viewer._id} currentUserRole={viewer.role} />

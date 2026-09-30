@@ -57,24 +57,24 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-white">
       <Navbar name={profile.name} role={profile.role} avatarUrl={profile.avatarUrl} />
 
       <main className="mx-auto max-w-5xl px-6 py-10">
-        <h1 className="text-2xl font-bold text-slate-900">Admin Panel</h1>
+        <h1 className="text-xl font-bold text-slate-900">Admin Panel</h1>
         <p className="mt-1 text-sm text-slate-500">Manage community members and their roles.</p>
 
         {actionMsg && (
           <p
             className={`mt-4 rounded-lg px-4 py-2 text-sm ${
-              actionMsg.type === 'success' ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'
+              actionMsg.type === 'success' ? 'bg-brand/10 text-brand' : 'bg-red-50 text-red-700'
             }`}
           >
             {actionMsg.text}
           </p>
         )}
 
-        <div className="mt-6 overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-100">
+        <div className="mt-6 overflow-hidden rounded-lg border border-slate-200 bg-white">
           <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
             <h2 className="font-semibold text-slate-900">All Users</h2>
             <span className="text-sm text-slate-500">{users.length} total</span>
@@ -103,9 +103,7 @@ export default function AdminDashboard() {
                     <td className="px-6 py-3 text-slate-600">{u.email}</td>
                     <td className="px-6 py-3">
                       <span
-                        className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                          u.role === 'admin' ? 'bg-emerald-100 text-emerald-700' : 'bg-indigo-100 text-indigo-700'
-                        }`}
+                        className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-xs font-medium text-slate-600"
                       >
                         {u.role}
                       </span>
@@ -117,7 +115,7 @@ export default function AdminDashboard() {
                             e.stopPropagation();
                             handleRoleChange(u._id, 'user');
                           }}
-                          className="rounded-lg bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 hover:bg-amber-100"
+                          className="rounded-lg border border-slate-200 px-3 py-1 text-xs font-medium text-slate-600 hover:bg-slate-50"
                         >
                           Demote
                         </button>
@@ -127,7 +125,7 @@ export default function AdminDashboard() {
                             e.stopPropagation();
                             handleRoleChange(u._id, 'admin');
                           }}
-                          className="rounded-lg bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 hover:bg-emerald-100"
+                          className="rounded-lg border border-brand px-3 py-1 text-xs font-medium text-brand hover:bg-brand/10"
                         >
                           Promote
                         </button>

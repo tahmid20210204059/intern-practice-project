@@ -87,7 +87,7 @@ export default function PostSearch({ currentUserId, currentUserRole }: PostSearc
           placeholder="Search posts by title or content..."
           autoComplete="off"
           autoFocus
-          className="w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-9 pr-10 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 [&::-webkit-search-cancel-button]:hidden"
+          className="w-full rounded-lg border border-slate-300 bg-white py-2.5 pl-9 pr-10 text-sm text-slate-900 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 [&::-webkit-search-cancel-button]:hidden"
         />
         {input && (
           <button
@@ -105,7 +105,7 @@ export default function PostSearch({ currentUserId, currentUserRole }: PostSearc
       </p>
       <div className="mt-6">
         {view === 'initial' && (
-          <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
+          <div className="rounded-lg border border-dashed border-slate-300 bg-white p-10 text-center">
             <Search className="mx-auto text-slate-300" size={28} />
             <p className="mt-3 text-sm font-medium text-slate-500">Search the community</p>
             <p className="mt-1 text-sm text-slate-400">Type a keyword to find posts by title or content.</p>
@@ -119,7 +119,7 @@ export default function PostSearch({ currentUserId, currentUserRole }: PostSearc
           </div>
         )}
         {(view === 'empty' || view === 'invalid') && (
-          <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
+          <div className="rounded-lg border border-dashed border-slate-300 bg-white p-10 text-center">
             <SearchX className="mx-auto text-slate-300" size={28} />
             <p className="mt-3 text-sm font-medium text-slate-500">No posts found for &ldquo;{liveTerm}&rdquo;</p>
             <p className="mt-1 text-sm text-slate-400">
@@ -128,7 +128,7 @@ export default function PostSearch({ currentUserId, currentUserRole }: PostSearc
           </div>
         )}
         {view === 'error' && (
-          <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-center">
+          <div className="rounded-lg border border-red-100 bg-red-50 p-6 text-center">
             <AlertCircle className="mx-auto text-red-500" size={22} />
             <p className="mt-2 text-sm font-medium text-red-700">{(error as Error)?.message || 'Search failed. Please try again.'}</p>
             <button

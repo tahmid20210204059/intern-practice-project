@@ -56,9 +56,9 @@ export default function PortfolioProjectDetailPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen bg-white">
         {viewer && <Navbar name={viewer.name} role={viewer.role} avatarUrl={viewer.avatarUrl} />}
-        <div className="mx-auto max-w-2xl px-6 py-16 text-center">
+        <div className="mx-auto max-w-3xl px-6 py-16 text-center">
           <p className="text-lg font-semibold text-slate-900">Profile unavailable</p>
           <p className="mt-2 text-sm text-red-600">{error}</p>
         </div>
@@ -71,12 +71,12 @@ export default function PortfolioProjectDetailPage() {
 
   if (!project) {
     return (
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen bg-white">
         {viewer && <Navbar name={viewer.name} role={viewer.role} avatarUrl={viewer.avatarUrl} />}
-        <main className="mx-auto max-w-2xl px-6 py-16 text-center">
+        <main className="mx-auto max-w-3xl px-6 py-16 text-center">
           <p className="text-lg font-semibold text-slate-900">Project not found</p>
           <p className="mt-2 text-sm text-slate-500">This project may have been removed or the link is incorrect.</p>
-          <Link href={profileHref} className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 hover:underline">
+          <Link href={profileHref} className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-brand hover:underline">
             <ArrowLeft size={15} />
             Back to profile
           </Link>
@@ -88,23 +88,23 @@ export default function PortfolioProjectDetailPage() {
   const isCurrent = !!project.isCurrent;
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-white">
       {viewer && <Navbar name={viewer.name} role={viewer.role} avatarUrl={viewer.avatarUrl} />}
 
       <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
-        <Link href={profileHref} className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-indigo-600">
+        <Link href={profileHref} className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-brand">
           <ArrowLeft size={15} />
           Back to profile
         </Link>
 
-        <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <div className="mt-4 rounded-lg border border-slate-200 bg-white p-6 sm:p-8">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
               <div className="flex flex-wrap items-center gap-2">
-                <h1 className="text-2xl font-bold text-slate-900">{project.title}</h1>
+                <h1 className="text-xl font-bold text-slate-900">{project.title}</h1>
                 <span
                   className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium ${
-                    isCurrent ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-slate-200 bg-slate-50 text-slate-600'
+                    isCurrent ? 'border-slate-200 bg-brand/10 text-brand' : 'border-slate-200 bg-slate-50 text-slate-600'
                   }`}
                 >
                   {isCurrent ? <Clock size={12} /> : <CheckCircle2 size={12} />}
@@ -135,7 +135,7 @@ export default function PortfolioProjectDetailPage() {
                   href={project.urls.live}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
+                  className="inline-flex items-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-dark"
                 >
                   <Globe size={16} />
                   View Live
@@ -167,7 +167,7 @@ export default function PortfolioProjectDetailPage() {
               <h2 className="text-base font-semibold text-slate-900">Tools &amp; technologies</h2>
               <div className="mt-3 flex flex-wrap gap-2">
                 {project.technologies.map((tech: string) => (
-                  <span key={tech} className="rounded-full bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-700">
+                  <span key={tech} className="rounded-full bg-brand/10 px-3 py-1 text-sm font-medium text-brand">
                     {tech}
                   </span>
                 ))}

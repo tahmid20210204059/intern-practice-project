@@ -63,7 +63,7 @@ export default function Signup() {
         onSubmit={handleSubmit(onSubmit)}
         noValidate
         autoComplete="off"
-        className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-sm ring-1 ring-slate-100"
+        className="w-full max-w-sm rounded-lg bg-white p-8  "
       >
         <h1 className="text-xl font-bold text-slate-900">Create Account</h1>
         <p className="mt-1 text-sm text-slate-500">Join the Dev Community</p>
@@ -81,7 +81,7 @@ export default function Signup() {
             aria-invalid={!!errors.name}
             aria-describedby={errors.name ? 'name-error' : undefined}
             {...register('name')}
-            className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+            className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm text-slate-900 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
           />
           {errors.name && (
             <p id="name-error" role="alert" className="mt-1 text-xs text-red-600">
@@ -98,7 +98,7 @@ export default function Signup() {
             aria-invalid={!!errors.email}
             aria-describedby={errors.email ? 'email-error' : undefined}
             {...register('email')}
-            className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+            className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm text-slate-900 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
           />
           {errors.email && (
             <p id="email-error" role="alert" className="mt-1 text-xs text-red-600">
@@ -115,7 +115,7 @@ export default function Signup() {
             aria-invalid={!!errors.password}
             aria-describedby={errors.password ? 'password-error' : undefined}
             {...register('password')}
-            className="w-full rounded-lg border border-slate-300 px-3 py-2.5 pr-10 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+            className="w-full rounded-lg border border-slate-300 px-3 py-2.5 pr-10 text-sm text-slate-900 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
           />
           <button
             type="button"
@@ -142,7 +142,7 @@ export default function Signup() {
             aria-invalid={!!errors.confirmPassword}
             aria-describedby={errors.confirmPassword ? 'confirm-password-error' : undefined}
             {...register('confirmPassword')}
-            className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+            className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm text-slate-900 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
           />
           {errors.confirmPassword && (
             <p id="confirm-password-error" role="alert" className="mt-1 text-xs text-red-600">
@@ -154,14 +154,14 @@ export default function Signup() {
         <button
           type="submit"
           disabled={isPending}
-          className="mt-5 w-full rounded-lg bg-indigo-600 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-60"
+          className="mt-5 w-full rounded-lg bg-brand py-2.5 text-sm font-semibold text-white transition hover:bg-brand-dark disabled:opacity-60"
         >
           {isPending ? 'Creating...' : 'Sign Up'}
         </button>
 
         <p className="mt-5 text-center text-sm text-slate-500">
           Already have an account?{' '}
-          <a href="/login" className="font-semibold text-indigo-600 hover:underline">
+          <a href="/login" className="font-semibold text-brand hover:underline">
             Log in
           </a>
         </p>

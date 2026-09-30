@@ -14,7 +14,7 @@ import FeedTabs from '@/features/posts/components/FeedTabs';
 
 function FeedLoading() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50">
+    <div className="flex min-h-screen items-center justify-center bg-white">
       <p className="text-sm font-medium text-slate-500">Loading...</p>
     </div>
   );
@@ -103,28 +103,25 @@ function FeedContent() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-white">
       <Navbar name={viewer.name} role={viewer.role} avatarUrl={viewer.avatarUrl} />
 
-      <main className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
+      <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
         <div className="mb-6 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900">Feed</h1>
-            <p className="mt-1 text-sm text-slate-500">See what the community is sharing.</p>
-          </div>
-          <Link
-            href="/posts/new"
-            className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
-          >
-            <PenSquare size={15} />
-            New Post
-          </Link>
+          <h1 className="text-xl font-bold text-slate-900">Feed</h1>
+          <FeedTabs active={sort} />
         </div>
-
-        <FeedTabs active={sort} />
+        <Link href="/posts/new" className="mb-6 flex items-center gap-3 rounded-lg border border-slate-200 bg-white p-3 hover:bg-slate-50">
+          {viewer.avatarUrl ? (
+            <img src={viewer.avatarUrl} alt={viewer.name} className="h-9 w-9 rounded-full object-cover" />
+          ) : (
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand text-sm font-semibold text-white">{viewer.name.charAt(0).toUpperCase()}</span>
+          )}
+          <span className="flex-1 rounded-full bg-slate-100 px-4 py-2 text-left text-sm text-slate-500">What&apos;s on your mind?</span>
+        </Link>
 
         {isLoading && (
-          <div className="space-y-4">
+          <div className="space-y-3">
             <PostCardSkeleton />
             <PostCardSkeleton />
             <PostCardSkeleton />
@@ -132,7 +129,7 @@ function FeedContent() {
         )}
 
         {isError && !isLoading && (
-          <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-center">
+          <div className="rounded-lg border border-red-100 bg-red-50 p-6 text-center">
             <AlertCircle className="mx-auto text-red-500" size={22} />
             <p className="mt-2 text-sm font-medium text-red-700">{(error as Error)?.message || 'Failed to load the feed.'}</p>
             <button
@@ -147,12 +144,12 @@ function FeedContent() {
         )}
 
         {!isLoading && !isError && posts.length === 0 && (
-          <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
+          <div className="rounded-lg border border-dashed border-slate-300 bg-white p-10 text-center">
             <p className="text-sm font-medium text-slate-500">No posts yet.</p>
             <p className="mt-1 text-sm text-slate-400">Be the first to share something with the community.</p>
             <Link
               href="/posts/new"
-              className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
+              className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark"
             >
               <PenSquare size={15} />
               Create a post
@@ -161,7 +158,7 @@ function FeedContent() {
         )}
 
         {!isLoading && !isError && posts.length > 0 && (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {posts.map((post) => (
               <PostCard key={post._id} post={post} currentUserId={viewer._id} currentUserRole={viewer.role} variant="feed" />
             ))}
@@ -171,7 +168,7 @@ function FeedContent() {
         <div ref={loadMoreRef} className="h-1" />
 
         {isFetchingNextPage && (
-          <div className="mt-4 space-y-4">
+          <div className="mt-4 space-y-3">
             <PostCardSkeleton />
           </div>
         )}

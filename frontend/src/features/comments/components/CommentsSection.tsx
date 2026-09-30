@@ -43,8 +43,7 @@ export default function CommentsSection({ postId, postAuthorId, commentCount, cu
         )}
 
         {!isLoading && !isError && comments && comments.length === 0 && (
-          <div className="rounded-xl border border-dashed border-slate-200 py-8 text-center">
-            <p className="text-2xl">💬</p>
+          <div className="rounded-lg border border-dashed border-slate-200 py-8 text-center">
             <p className="mt-2 text-sm font-medium text-slate-500">No comments yet</p>
             <p className="text-xs text-slate-400">Be the first to comment.</p>
           </div>

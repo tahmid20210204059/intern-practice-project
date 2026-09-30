@@ -63,7 +63,7 @@ export default function Login() {
         onSubmit={handleSubmit(onSubmit)}
         noValidate
         autoComplete="off"
-        className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-sm ring-1 ring-slate-100"
+        className="w-full max-w-sm rounded-lg bg-white p-8  "
       >
         <h1 className="text-xl font-bold text-slate-900">Welcome Back</h1>
         <p className="mt-1 text-sm text-slate-500">Log in to your account</p>
@@ -82,7 +82,7 @@ export default function Login() {
             aria-invalid={!!errors.email}
             aria-describedby={errors.email ? 'email-error' : undefined}
             {...register('email')}
-            className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+            className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm text-slate-900 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
           />
           {errors.email && (
             <p id="email-error" role="alert" className="mt-1 text-xs text-red-600">
@@ -99,7 +99,7 @@ export default function Login() {
             aria-invalid={!!errors.password}
             aria-describedby={errors.password ? 'password-error' : undefined}
             {...register('password')}
-            className="w-full rounded-lg border border-slate-300 px-3 py-2.5 pr-10 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+            className="w-full rounded-lg border border-slate-300 px-3 py-2.5 pr-10 text-sm text-slate-900 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
           />
           <button
             type="button"
@@ -119,14 +119,14 @@ export default function Login() {
         <button
           type="submit"
           disabled={isPending}
-          className="mt-5 w-full rounded-lg bg-indigo-600 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-60"
+          className="mt-5 w-full rounded-lg bg-brand py-2.5 text-sm font-semibold text-white transition hover:bg-brand-dark disabled:opacity-60"
         >
           {isPending ? 'Logging in...' : 'Log In'}
         </button>
 
         <p className="mt-5 text-center text-sm text-slate-500">
           Don't have an account?{' '}
-          <a href="/signup" className="font-semibold text-indigo-600 hover:underline">
+          <a href="/signup" className="font-semibold text-brand hover:underline">
             Sign up
           </a>
         </p>

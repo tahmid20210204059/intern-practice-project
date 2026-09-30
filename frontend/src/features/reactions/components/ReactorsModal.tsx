@@ -66,7 +66,7 @@ export default function ReactorsModal({ targetType, targetId, onClose }: Reactor
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="flex max-h-[80vh] w-full max-w-sm flex-col overflow-hidden rounded-2xl bg-white shadow-xl">
+      <div className="flex max-h-[80vh] w-full max-w-sm flex-col overflow-hidden rounded-lg bg-white shadow-xl">
         <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
           <h2 className="text-sm font-semibold text-slate-900">Reactions</h2>
           <button
@@ -139,11 +139,11 @@ export default function ReactorsModal({ targetType, targetId, onClose }: Reactor
                           className="h-9 w-9 rounded-full object-cover"
                         />
                       ) : (
-                        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-900 text-xs font-semibold text-white">
+                        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand text-xs font-semibold text-white">
                           {item.user?.name?.charAt(0).toUpperCase() ?? '?'}
                         </span>
                       )}
-                      <span className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[10px] shadow ring-1 ring-slate-100">
+                      <span className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[10px] shadow ">
                         {meta?.emoji}
                       </span>
                     </div>

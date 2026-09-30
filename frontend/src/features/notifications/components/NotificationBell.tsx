@@ -126,11 +126,11 @@ export default function NotificationBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 z-30 mt-2 w-80 overflow-hidden rounded-xl bg-white shadow-lg ring-1 ring-slate-200">
+        <div className="absolute right-0 z-30 mt-2 w-80 overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-slate-200">
           <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
             <p className="text-sm font-semibold text-slate-900">Notifications</p>
             {unreadCount > 0 && (
-              <button type="button" onClick={handleMarkAllRead} className="text-xs font-medium text-indigo-600 hover:underline">
+              <button type="button" onClick={handleMarkAllRead} className="text-xs font-medium text-brand hover:underline">
                 Mark all as read
               </button>
             )}
@@ -147,13 +147,13 @@ export default function NotificationBell() {
                   type="button"
                   onClick={() => handleNotificationClick(n)}
                   className={`flex w-full items-start gap-3 border-b border-slate-50 px-4 py-3 text-left text-sm last:border-0 hover:bg-slate-50 ${
-                    n.read ? 'text-slate-500' : 'bg-indigo-50/60 font-medium text-slate-900'
+                    n.read ? 'text-slate-500' : 'bg-brand/10 font-medium text-slate-900'
                   }`}
                 >
                   {n.actorId?.avatarUrl ? (
                     <img src={n.actorId.avatarUrl} alt={n.actorId.name} className="h-8 w-8 shrink-0 rounded-full object-cover" />
                   ) : n.actorId?.name ? (
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-900 text-xs font-semibold text-white">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand text-xs font-semibold text-white">
                       {n.actorId.name.charAt(0).toUpperCase()}
                     </span>
                   ) : (

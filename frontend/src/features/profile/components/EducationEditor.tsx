@@ -104,7 +104,7 @@ export default function EducationEditor({ education, onSave, onCancel }: Educati
               </div>
             </div>
             <div className="flex shrink-0 gap-2 text-sm">
-              <button type="button" onClick={() => handleEdit(index)} className="text-indigo-600 hover:underline">
+              <button type="button" onClick={() => handleEdit(index)} className="text-brand hover:underline">
                 Edit
               </button>
               <button type="button" onClick={() => handleRemove(index)} className="text-red-600 hover:underline">
@@ -124,19 +124,19 @@ export default function EducationEditor({ education, onSave, onCancel }: Educati
               value={form.degree}
               onChange={(e) => setForm({ ...form, degree: e.target.value })}
               placeholder="Degree (e.g. B.Sc in CSE)"
-              className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+              className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
             />
             <input
               value={form.institute}
               onChange={(e) => setForm({ ...form, institute: e.target.value })}
               placeholder="Institute / University"
-              className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+              className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
             />
             <input
               value={form.subject}
               onChange={(e) => setForm({ ...form, subject: e.target.value })}
               placeholder="Field of study (optional)"
-              className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 sm:col-span-2"
+              className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 sm:col-span-2"
             />
             <div>
               <label className="mb-1 block text-xs font-medium text-slate-500">Start date</label>
@@ -144,7 +144,7 @@ export default function EducationEditor({ education, onSave, onCancel }: Educati
                 type="month"
                 value={form.from}
                 onChange={(e) => setForm({ ...form, from: e.target.value })}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
               />
             </div>
             <div>
@@ -154,7 +154,7 @@ export default function EducationEditor({ education, onSave, onCancel }: Educati
                 value={form.to}
                 disabled={isCurrent}
                 onChange={(e) => setForm({ ...form, to: e.target.value })}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-100 disabled:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-100 disabled:text-slate-400 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
               />
               {formError && formError.includes('End date') && <p className="mt-1 text-xs text-red-600">{formError}</p>}
               <label className="mt-1.5 flex items-center gap-1.5 text-xs text-slate-500">
@@ -176,14 +176,14 @@ export default function EducationEditor({ education, onSave, onCancel }: Educati
         <button
           type="button"
           onClick={() => setShowForm(true)}
-          className="mt-4 rounded-lg border border-dashed border-slate-300 px-4 py-2 text-sm font-medium text-indigo-600 hover:bg-indigo-50"
+          className="mt-4 rounded-lg border border-dashed border-slate-300 px-4 py-2 text-sm font-medium text-brand hover:bg-brand/10"
         >
           + Add education
         </button>
       )}
 
       {message && (
-        <p className={`mt-3 text-sm ${message.type === 'success' ? 'text-emerald-600' : 'text-red-600'}`}>{message.text}</p>
+        <p className={`mt-3 text-sm ${message.type === 'success' ? 'text-brand' : 'text-red-600'}`}>{message.text}</p>
       )}
 
       <div className="mt-4 flex gap-2">
@@ -191,7 +191,7 @@ export default function EducationEditor({ education, onSave, onCancel }: Educati
           type="button"
           onClick={handleSave}
           disabled={saving}
-          className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-60"
+          className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-dark disabled:opacity-60"
         >
           {saving ? 'Saving...' : 'Save Education'}
         </button>

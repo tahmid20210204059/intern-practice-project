@@ -103,13 +103,13 @@ function ReplyRow({
       {authorAvatar ? (
         <img src={authorAvatar} alt={authorName} className="h-7 w-7 shrink-0 rounded-full object-cover" />
       ) : (
-        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-900 text-[11px] font-semibold text-white">
+        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand text-[11px] font-semibold text-white">
           {authorName.charAt(0).toUpperCase()}
         </span>
       )}
 
       <div className="min-w-0 flex-1">
-        <div className="rounded-xl bg-slate-50 px-3 py-2">
+        <div className="rounded-lg bg-slate-50 px-3 py-2">
           <div className="flex items-start justify-between gap-2">
             <div className="flex flex-wrap items-baseline gap-x-2">
               <p className="text-sm font-semibold text-slate-900">{authorName}</p>
@@ -130,7 +130,7 @@ function ReplyRow({
           </div>
 
           {showReplyingTo && !editOpen && (
-            <p className="text-xs font-medium text-indigo-500">Replying to @{replyingToName}</p>
+            <p className="text-xs font-medium text-brand">Replying to @{replyingToName}</p>
           )}
 
           {editOpen ? (
@@ -171,7 +171,7 @@ function ReplyRow({
               type="button"
               ref={replyButtonRef}
               onClick={() => setReplyOpen(true)}
-              className="text-xs font-semibold text-indigo-600 hover:underline"
+              className="text-xs font-semibold text-brand hover:underline"
             >
               Reply
             </button>
@@ -236,13 +236,13 @@ export default function CommentItem({ comment, postId, postAuthorId, currentUser
         {authorAvatar ? (
           <img src={authorAvatar} alt={authorName} className="h-8 w-8 shrink-0 rounded-full object-cover" />
         ) : (
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-900 text-xs font-semibold text-white">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand text-xs font-semibold text-white">
             {authorName.charAt(0).toUpperCase()}
           </span>
         )}
 
         <div className="min-w-0 flex-1">
-          <div className="rounded-xl bg-slate-50 px-3 py-2">
+          <div className="rounded-lg bg-slate-50 px-3 py-2">
             <div className="flex items-start justify-between gap-2">
               <div className="flex flex-wrap items-baseline gap-x-2">
                 <p className="text-sm font-semibold text-slate-900">{authorName}</p>
@@ -301,7 +301,7 @@ export default function CommentItem({ comment, postId, postAuthorId, currentUser
                 type="button"
                 ref={replyButtonRef}
                 onClick={() => setReplyOpen(true)}
-                className="text-xs font-semibold text-indigo-600 hover:underline"
+                className="text-xs font-semibold text-brand hover:underline"
               >
                 Reply
               </button>
@@ -312,7 +312,7 @@ export default function CommentItem({ comment, postId, postAuthorId, currentUser
                 type="button"
                 onClick={() => setRepliesOpen((prev) => !prev)}
                 aria-expanded={repliesOpen}
-                className="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 hover:text-indigo-600"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 hover:text-brand"
               >
                 {repliesOpen ? (
                   <>

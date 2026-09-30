@@ -21,7 +21,7 @@ export default function CommentActionsMenu({
         <button
           type="button"
           onClick={onEdit}
-          className="rounded px-1.5 py-0.5 text-xs font-medium text-slate-500 hover:bg-slate-100 hover:text-indigo-600"
+          className="rounded px-1.5 py-0.5 text-xs font-medium text-slate-500 hover:bg-slate-100 hover:text-brand"
         >
           Edit
         </button>

@@ -45,9 +45,9 @@ export default function EditPostPage() {
 
   if (viewerLoading || isLoading) {
     return (
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen bg-white">
         {viewer && <Navbar name={viewer.name} role={viewer.role} avatarUrl={viewer.avatarUrl} />}
-        <main className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
+        <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
           <PostCardSkeleton />
         </main>
       </div>
@@ -56,11 +56,11 @@ export default function EditPostPage() {
 
   if (isError || !post) {
     return (
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen bg-white">
         <Navbar name={viewer.name} role={viewer.role} avatarUrl={viewer.avatarUrl} />
-        <main className="mx-auto max-w-2xl px-4 py-8 text-center sm:px-6">
+        <main className="mx-auto max-w-3xl px-4 py-8 text-center sm:px-6">
           <p className="text-sm font-medium text-red-600">{(error as Error)?.message || 'Post not found.'}</p>
-          <Link href="/feed" className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 hover:underline">
+          <Link href="/feed" className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-brand hover:underline">
             <ArrowLeft size={15} />
             Back to feed
           </Link>
@@ -72,11 +72,11 @@ export default function EditPostPage() {
   const isOwner = post.authorId?._id === viewer._id;
   if (!isOwner) {
     return (
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen bg-white">
         <Navbar name={viewer.name} role={viewer.role} avatarUrl={viewer.avatarUrl} />
-        <main className="mx-auto max-w-2xl px-4 py-8 text-center sm:px-6">
+        <main className="mx-auto max-w-3xl px-4 py-8 text-center sm:px-6">
           <p className="text-sm font-medium text-red-600">You don't have permission to edit this post.</p>
-          <Link href={`/posts/${id}`} className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 hover:underline">
+          <Link href={`/posts/${id}`} className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-brand hover:underline">
             <ArrowLeft size={15} />
             Back to post
           </Link>
@@ -86,17 +86,17 @@ export default function EditPostPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-white">
       <Navbar name={viewer.name} role={viewer.role} avatarUrl={viewer.avatarUrl} />
-      <main className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
-        <Link href={`/posts/${id}`} className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-indigo-600">
+      <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
+        <Link href={`/posts/${id}`} className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-brand">
           <ArrowLeft size={15} />
           Back to post
         </Link>
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-slate-900">Edit Post</h1>
+          <h1 className="text-xl font-bold text-slate-900">Edit Post</h1>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <div className="rounded-lg border border-slate-200 bg-white p-6 sm:p-8">
           <PostForm
             defaultValues={{ title: post.title, body: post.body, imageUrl: post.imageUrl || '' }}
             onSubmit={handleSubmit}

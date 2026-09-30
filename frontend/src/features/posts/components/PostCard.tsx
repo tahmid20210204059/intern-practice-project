@@ -27,7 +27,7 @@ function renderBodyWithLinks(text: string) {
           target="_blank"
           rel="noopener noreferrer"
           onClick={(e) => e.stopPropagation()}
-          className="break-all text-indigo-600 underline hover:text-indigo-700"
+          className="break-all text-brand underline hover:text-brand"
         >
           {part}
         </a>
@@ -74,13 +74,13 @@ export default function PostCard({ post, currentUserId, currentUserRole, variant
   };
 
   return (
-    <article className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
+    <article className="rounded-lg border border-slate-200 bg-white p-5 sm:p-6">
       <div className="flex items-start justify-between gap-3">
         <Link href={`/profile/${authorId}`} className="flex items-center gap-3">
           {authorAvatar ? (
             <img src={authorAvatar} alt={authorName} className="h-10 w-10 rounded-full object-cover" />
           ) : (
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-sm font-semibold text-white">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand text-sm font-semibold text-white">
               {authorName.charAt(0).toUpperCase()}
             </span>
           )}
@@ -97,7 +97,7 @@ export default function PostCard({ post, currentUserId, currentUserRole, variant
             {isOwner && (
               <Link
                 href={`/posts/${post._id}/edit`}
-                className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-indigo-600"
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-brand"
                 aria-label="Edit post"
               >
                 <Pencil size={15} />
@@ -141,10 +141,10 @@ export default function PostCard({ post, currentUserId, currentUserRole, variant
       <div className="mt-4">
         {variant === 'feed' ? (
           <Link href={`/posts/${post._id}`}>
-            <h2 className="break-words text-base font-semibold text-slate-900 hover:text-indigo-600">{post.title}</h2>
+            <h2 className="break-words text-base font-semibold text-slate-900 hover:text-brand">{post.title}</h2>
           </Link>
         ) : (
-          <h1 className="break-words text-xl font-bold text-slate-900">{post.title}</h1>
+          <h1 className="text-xl font-bold text-slate-900">{post.title}</h1>
         )}
         <p
           className={`mt-2 min-w-0 overflow-hidden whitespace-pre-line break-words text-sm leading-relaxed text-slate-600 ${
@@ -154,7 +154,7 @@ export default function PostCard({ post, currentUserId, currentUserRole, variant
           {renderBodyWithLinks(post.body)}
         </p>
         {variant === 'feed' && post.body.length > 280 && (
-          <Link href={`/posts/${post._id}`} className="mt-1 inline-block text-sm font-medium text-indigo-600 hover:underline">
+          <Link href={`/posts/${post._id}`} className="mt-1 inline-block text-sm font-medium text-brand hover:underline">
             Read more
           </Link>
         )}
@@ -162,7 +162,7 @@ export default function PostCard({ post, currentUserId, currentUserRole, variant
           <img
             src={post.imageUrl}
             alt=""
-            className="mt-3 max-h-[480px] w-full rounded-xl border border-slate-100 object-cover"
+            className="mt-3 max-h-[480px] w-full rounded-lg border border-slate-100 object-cover"
           />
         )}
       </div>
@@ -174,7 +174,7 @@ export default function PostCard({ post, currentUserId, currentUserRole, variant
           onClick={() => setCommentsOpen((prev) => !prev)}
           aria-expanded={commentsOpen}
           aria-label={commentsOpen ? 'Hide comments' : 'Show comments'}
-          className="inline-flex items-center gap-1 font-medium text-slate-500 transition hover:text-indigo-600"
+          className="inline-flex items-center gap-1 font-medium text-slate-500 transition hover:text-brand"
         >
           <MessageCircle size={14} />
           {post.commentCount}

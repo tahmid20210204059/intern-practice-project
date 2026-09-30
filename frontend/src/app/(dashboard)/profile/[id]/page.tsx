@@ -65,7 +65,7 @@ function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <section id={id} className="scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+    <section id={id} className="scroll-mt-24 rounded-lg border border-slate-200 bg-white p-6 sm:p-8">
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-start gap-3">
           <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500">
@@ -229,9 +229,9 @@ export default function ProfilePage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen bg-white">
         {viewer && <Navbar name={viewer.name} role={viewer.role} avatarUrl={viewer.avatarUrl} />}
-        <div className="mx-auto max-w-2xl px-6 py-16 text-center">
+        <div className="mx-auto max-w-3xl px-6 py-16 text-center">
           <p className="text-lg font-semibold text-slate-900">Profile unavailable</p>
           <p className="mt-2 text-sm text-red-600">{error}</p>
         </div>
@@ -245,17 +245,12 @@ export default function ProfilePage() {
     : null;
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-white">
       {viewer && <Navbar name={viewer.name} role={viewer.role} avatarUrl={viewer.avatarUrl} />}
 
       <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
-        <div id="about" className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-          <div
-            className="relative h-32 bg-slate-900 sm:h-40"
-            style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.08) 1px, transparent 0)', backgroundSize: '18px 18px' }}
-          >
-            <div className="absolute inset-x-0 bottom-0 h-px bg-indigo-500/50" />
-          </div>
+        <div id="about" className="overflow-hidden rounded-lg border border-slate-200 bg-white">
+          <div className="relative h-24 bg-slate-100 sm:h-24" />
 
           <div className="px-6 pb-6 sm:px-8">
             <div className="-mt-12 flex flex-wrap items-end justify-between gap-4 sm:-mt-14">
@@ -264,10 +259,10 @@ export default function ProfilePage() {
                   <img
                     src={editingSection === 'about' ? aboutForm.avatarUrl : profile.avatarUrl}
                     alt={profile.name}
-                    className="h-24 w-24 rounded-full border-4 border-white object-cover shadow-sm sm:h-28 sm:w-28"
+                    className="h-24 w-24 rounded-full border-4 border-white object-cover  sm:h-28 sm:w-28"
                   />
                 ) : (
-                  <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-white bg-slate-900 text-3xl font-semibold text-white shadow-sm sm:h-28 sm:w-28">
+                  <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-white bg-brand text-3xl font-semibold text-white  sm:h-28 sm:w-28">
                     {profile.name?.charAt(0).toUpperCase()}
                   </div>
                 )}
@@ -276,7 +271,7 @@ export default function ProfilePage() {
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
                     disabled={avatarUploading}
-                    className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-slate-900 text-white shadow hover:bg-slate-800 disabled:opacity-60"
+                    className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-brand text-white shadow hover:bg-slate-800 disabled:opacity-60"
                     aria-label="Change photo"
                   >
                     <Camera size={14} />
@@ -350,7 +345,7 @@ export default function ProfilePage() {
                   <input
                     value={aboutForm.name}
                     onChange={(e) => setAboutForm({ ...aboutForm, name: e.target.value })}
-                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
                   />
                 </div>
                 <div>
@@ -360,7 +355,7 @@ export default function ProfilePage() {
                     onChange={(e) => setAboutForm({ ...aboutForm, headline: e.target.value })}
                     maxLength={120}
                     placeholder="e.g. Full-stack Developer | React & NestJS"
-                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
                   />
                 </div>
                 <div>
@@ -371,19 +366,19 @@ export default function ProfilePage() {
                     rows={3}
                     maxLength={300}
                     placeholder="A short professional summary about yourself..."
-                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
                   />
                   <p className="mt-1 text-right text-xs text-slate-400">{aboutForm.bio.length}/300</p>
                 </div>
                 {aboutMessage && (
-                  <p className={`text-sm ${aboutMessage.type === 'success' ? 'text-emerald-600' : 'text-red-600'}`}>{aboutMessage.text}</p>
+                  <p className={`text-sm ${aboutMessage.type === 'success' ? 'text-brand' : 'text-red-600'}`}>{aboutMessage.text}</p>
                 )}
                 <div className="flex gap-2">
                   <button
                     type="button"
                     onClick={handleAboutSave}
                     disabled={aboutSaving || avatarUploading}
-                    className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-60"
+                    className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-dark disabled:opacity-60"
                   >
                     {aboutSaving ? 'Saving...' : 'Save Changes'}
                   </button>
@@ -403,13 +398,8 @@ export default function ProfilePage() {
             ) : (
               <div className="mt-4">
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                  <h1 className="text-xl font-semibold text-slate-900">{profile.name}</h1>
-                  <span
-                    className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium ${
-                      profile.role === 'admin' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-indigo-200 bg-indigo-50 text-indigo-700'
-                    }`}
-                  >
-                    <span className={`h-1.5 w-1.5 rounded-full ${profile.role === 'admin' ? 'bg-emerald-500' : 'bg-indigo-500'}`} />
+                  <h1 className="text-xl font-bold text-slate-900">{profile.name}</h1>
+                  <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-xs font-medium text-slate-600">
                     {profile.role === 'admin' ? 'Admin' : 'User'}
                   </span>
                 </div>
@@ -421,14 +411,14 @@ export default function ProfilePage() {
                     <button
                       type="button"
                       onClick={() => setEditingSection('about')}
-                      className="mt-1 text-sm font-medium text-indigo-600 hover:underline"
+                      className="mt-1 text-sm font-medium text-brand hover:underline"
                     >
                       + Add a professional headline
                     </button>
                   )
                 )}
 
-                <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-900">
+                <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500">
                   <span className="inline-flex items-center gap-1">
                     <Mail size={13} />
                     {profile.email}
@@ -436,7 +426,7 @@ export default function ProfilePage() {
                   {joinedLabel && <span>Joined {joinedLabel}</span>}
                 </div>
 
-                <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-900">
+                <p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-600">
                   {profile.bio || (isOwnProfile ? 'Add a short bio to tell others about yourself.' : 'No bio provided.')}
                 </p>
 
@@ -449,7 +439,7 @@ export default function ProfilePage() {
                         target="_blank"
                         rel="noopener noreferrer"
                         title={label}
-                        className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition hover:border-indigo-300 hover:text-indigo-600"
+                        className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition hover:border-brand hover:text-brand"
                       >
                         <Icon size={16} />
                       </a>
@@ -474,7 +464,7 @@ export default function ProfilePage() {
                         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                       }
                     }}
-                    className="block w-full rounded-lg px-3 py-1.5 text-left font-medium text-slate-900 hover:bg-white hover:text-slate-900"
+                    className="block w-full rounded-lg px-3 py-1.5 text-left font-medium text-slate-600 hover:bg-white hover:text-slate-900"
                   >
                     {item.label}
                   </button>
@@ -490,7 +480,7 @@ export default function ProfilePage() {
                         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                       }
                     }}
-                    className="block w-full rounded-lg px-3 py-1.5 text-left font-medium text-slate-900 hover:bg-white hover:text-slate-900"
+                    className="block w-full rounded-lg px-3 py-1.5 text-left font-medium text-slate-600 hover:bg-white hover:text-slate-900"
                   >
                     Security
                   </button>
@@ -507,7 +497,7 @@ export default function ProfilePage() {
               action={
                 canEdit &&
                 editingSection !== 'experience' && (
-                  <button type="button" onClick={() => setEditingSection('experience')} className="text-sm font-medium text-indigo-600 hover:underline">
+                  <button type="button" onClick={() => setEditingSection('experience')} className="text-sm font-medium text-brand hover:underline">
                     Edit
                   </button>
                 )
@@ -519,13 +509,13 @@ export default function ProfilePage() {
                 <div className="space-y-6 border-l border-slate-200 pl-6">
                   {profile.experiences.map((exp: any, i: number) => (
                     <div key={i} className="relative">
-                      <span className="absolute -left-[27px] top-1 h-3 w-3 rounded-full border-2 border-indigo-600 bg-white" />
+                      <span className="absolute -left-[27px] top-1 h-3 w-3 rounded-full border-2 border-brand bg-white" />
                       <p className="font-semibold text-slate-900">{exp.title}</p>
-                      <p className="text-sm text-slate-900">{exp.company}</p>
-                      <p className="text-xs text-slate-900">
+                      <p className="text-sm text-slate-600">{exp.company}</p>
+                      <p className="text-xs text-slate-500">
                         {formatMonth(exp.from)} — {formatMonth(exp.to)}
                       </p>
-                      {exp.description && <p className="mt-1.5 text-sm text-slate-900">{exp.description}</p>}
+                      {exp.description && <p className="mt-1.5 text-sm text-slate-600">{exp.description}</p>}
                     </div>
                   ))}
                 </div>
@@ -541,7 +531,7 @@ export default function ProfilePage() {
               action={
                 canEdit &&
                 editingSection !== 'education' && (
-                  <button type="button" onClick={() => setEditingSection('education')} className="text-sm font-medium text-indigo-600 hover:underline">
+                  <button type="button" onClick={() => setEditingSection('education')} className="text-sm font-medium text-brand hover:underline">
                     Edit
                   </button>
                 )
@@ -553,11 +543,11 @@ export default function ProfilePage() {
                 <div className="space-y-6 border-l border-slate-200 pl-6">
                   {profile.education.map((edu: any, i: number) => (
                     <div key={i} className="relative">
-                      <span className="absolute -left-[27px] top-1 h-3 w-3 rounded-full border-2 border-indigo-600 bg-white" />
+                      <span className="absolute -left-[27px] top-1 h-3 w-3 rounded-full border-2 border-brand bg-white" />
                       <p className="font-semibold text-slate-900">{edu.degree}</p>
-                      <p className="text-sm text-slate-900">{edu.institute}</p>
-                      {edu.subject && <p className="text-sm text-slate-900">{edu.subject}</p>}
-                      <p className="text-xs text-slate-900">
+                      <p className="text-sm text-slate-600">{edu.institute}</p>
+                      {edu.subject && <p className="text-sm text-slate-600">{edu.subject}</p>}
+                      <p className="text-xs text-slate-500">
                         {formatMonth(edu.from)} — {formatMonth(edu.to)}
                       </p>
                     </div>
@@ -575,7 +565,7 @@ export default function ProfilePage() {
               action={
                 canEdit &&
                 editingSection !== 'skills' && (
-                  <button type="button" onClick={() => setEditingSection('skills')} className="text-sm font-medium text-indigo-600 hover:underline">
+                  <button type="button" onClick={() => setEditingSection('skills')} className="text-sm font-medium text-brand hover:underline">
                     Edit
                   </button>
                 )
@@ -586,7 +576,7 @@ export default function ProfilePage() {
               ) : profile.skills?.length ? (
                 <div className="flex flex-wrap gap-2">
                   {profile.skills.map((skill: string) => (
-                    <span key={skill} className="rounded-full bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-700">
+                    <span key={skill} className="rounded-full bg-brand/10 px-3 py-1 text-sm font-medium text-brand">
                       {skill}
                     </span>
                   ))}
@@ -603,7 +593,7 @@ export default function ProfilePage() {
               description="Click a project to view full details."
               action={
                 isOwnProfile && (
-                  <Link href="/profile/edit" className="inline-flex items-center gap-1 text-sm font-medium text-indigo-600 hover:underline">
+                  <Link href="/profile/edit" className="inline-flex items-center gap-1 text-sm font-medium text-brand hover:underline">
                     Manage projects
                     <ArrowUpRight size={14} />
                   </Link>
@@ -616,12 +606,12 @@ export default function ProfilePage() {
                     <div
                       key={i}
                       onClick={() => router.push(`/profile/${id}/portfolio/${i}`)}
-                      className="cursor-pointer rounded-xl border border-slate-200 p-4 transition hover:border-indigo-300 hover:shadow-sm"
+                      className="cursor-pointer rounded-lg border border-slate-200 p-4 transition hover:border-brand hover:"
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div>
                           <p className="font-semibold text-slate-900">{project.title}</p>
-                          <p className="text-xs text-slate-900">
+                          <p className="text-xs text-slate-500">
                             {formatMonth(project.from)} — {project.isCurrent ? 'Present' : formatMonth(project.to)}
                           </p>
                         </div>
@@ -632,7 +622,7 @@ export default function ProfilePage() {
                               target="_blank"
                               rel="noopener noreferrer"
                               title="Live"
-                              className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:border-indigo-300 hover:text-indigo-600"
+                              className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:border-brand hover:text-brand"
                             >
                               <Globe size={15} />
                             </a>
@@ -643,14 +633,14 @@ export default function ProfilePage() {
                               target="_blank"
                               rel="noopener noreferrer"
                               title="GitHub"
-                              className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:border-indigo-300 hover:text-indigo-600"
+                              className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:border-brand hover:text-brand"
                             >
                               <GitBranch size={15} />
                             </a>
                           )}
                         </div>
                       </div>
-                      {project.description && <p className="mt-2 line-clamp-3 text-sm text-slate-900">{project.description}</p>}
+                      {project.description && <p className="mt-2 line-clamp-3 text-sm text-slate-600">{project.description}</p>}
                       {project.technologies?.length > 0 && (
                         <div className="mt-3 flex flex-wrap gap-1.5">
                           {project.technologies.map((tech: string) => (
@@ -677,7 +667,7 @@ export default function ProfilePage() {
               action={
                 canEdit &&
                 editingSection !== 'links' && (
-                  <button type="button" onClick={() => setEditingSection('links')} className="text-sm font-medium text-indigo-600 hover:underline">
+                  <button type="button" onClick={() => setEditingSection('links')} className="text-sm font-medium text-brand hover:underline">
                     Edit
                   </button>
                 )
@@ -693,7 +683,7 @@ export default function ProfilePage() {
                       href={profile.links?.[key] ?? '#'}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-indigo-300 hover:text-indigo-600"
+                      className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-brand hover:text-brand"
                     >
                       <Icon size={16} />
                       {label}
@@ -712,7 +702,7 @@ export default function ProfilePage() {
                 title="Security"
                 action={
                   editingSection !== 'security' && (
-                    <button type="button" onClick={() => setEditingSection('security')} className="text-sm font-medium text-indigo-600 hover:underline">
+                    <button type="button" onClick={() => setEditingSection('security')} className="text-sm font-medium text-brand hover:underline">
                       Change Password
                     </button>
                   )
@@ -744,7 +734,7 @@ export default function ProfilePage() {
                 isOwnProfile && (
                   <Link
                     href="/posts/new"
-                    className="inline-flex items-center gap-1 text-sm font-medium text-indigo-600 hover:underline"
+                    className="inline-flex items-center gap-1 text-sm font-medium text-brand hover:underline"
                   >
                     New Post
                     <ArrowUpRight size={14} />

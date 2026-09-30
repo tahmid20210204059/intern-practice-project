@@ -34,15 +34,15 @@ export default function EditProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-white">
       <Navbar name={viewer.name} role={viewer.role} avatarUrl={viewer.avatarUrl} />
       <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
-        <Link href="/profile/me" className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-indigo-600">
+        <Link href="/profile/me" className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-brand">
           <ArrowLeft size={15} />
           Back to profile
         </Link>
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-slate-900">Portfolio Projects</h1>
+          <h1 className="text-xl font-bold text-slate-900">Portfolio Projects</h1>
           <p className="mt-1 text-sm text-slate-500">Add, edit, and remove the projects on your profile.</p>
         </div>
         <PortfolioProjectsForm />

@@ -45,7 +45,7 @@ export default function NewCommentForm({ postId }: NewCommentFormProps) {
         maxLength={2000}
         placeholder="Write a comment..."
         disabled={isPending}
-        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 disabled:opacity-60"
+        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 disabled:opacity-60"
       />
       {(formError || serverError) && (
         <p role="alert" className="mt-1 text-xs text-red-600">
@@ -56,7 +56,7 @@ export default function NewCommentForm({ postId }: NewCommentFormProps) {
         <button
           type="submit"
           disabled={isPending}
-          className="rounded-lg bg-indigo-600 px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-60"
+          className="rounded-lg bg-brand px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-brand-dark disabled:opacity-60"
         >
           {isPending ? 'Submitting...' : 'Submit'}
         </button>

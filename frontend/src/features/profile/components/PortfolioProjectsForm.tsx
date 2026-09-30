@@ -90,7 +90,7 @@ export default function PortfolioProjectsForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {mutation.isSuccess && (
-        <p className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-600">
+        <p className="rounded-lg bg-brand/10 px-3 py-2 text-sm text-brand">
           Portfolio saved. Taking you back to your profile...
         </p>
       )}
@@ -107,7 +107,7 @@ export default function PortfolioProjectsForm() {
         </div>
       )}
 
-      <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200 sm:p-8">
+      <div className="rounded-lg bg-white p-6  ring-1 ring-slate-200 sm:p-8">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-semibold text-slate-900">Projects</h2>
@@ -116,7 +116,7 @@ export default function PortfolioProjectsForm() {
           <button
             type="button"
             onClick={() => appendProject(emptyProject())}
-            className="rounded-lg border border-dashed border-slate-300 px-3 py-1.5 text-sm font-medium text-indigo-600 hover:bg-indigo-50"
+            className="rounded-lg border border-dashed border-slate-300 px-3 py-1.5 text-sm font-medium text-brand hover:bg-brand/10"
           >
             + Add project
           </button>
@@ -147,7 +147,7 @@ export default function PortfolioProjectsForm() {
         <button
           type="submit"
           disabled={mutation.isPending}
-          className="rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-60"
+          className="rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-dark disabled:opacity-60"
         >
           {mutation.isPending ? 'Saving...' : 'Save Portfolio'}
         </button>

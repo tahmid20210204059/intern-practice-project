@@ -41,10 +41,10 @@ export default function PostDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-white">
       <Navbar name={viewer.name} role={viewer.role} avatarUrl={viewer.avatarUrl} />
-      <main className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
-        <Link href="/feed" className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-indigo-600">
+      <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
+        <Link href="/feed" className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-brand">
           <ArrowLeft size={15} />
           Back to feed
         </Link>
@@ -52,7 +52,7 @@ export default function PostDetailPage() {
         {isLoading && <PostCardSkeleton />}
 
         {isError && !isLoading && (
-          <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-center">
+          <div className="rounded-lg border border-red-100 bg-red-50 p-6 text-center">
             <p className="text-sm font-medium text-red-700">{(error as Error)?.message || 'Failed to load this post.'}</p>
             <button
               type="button"

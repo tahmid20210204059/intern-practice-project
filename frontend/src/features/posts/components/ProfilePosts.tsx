@@ -58,7 +58,7 @@ export default function ProfilePosts({ profileId, currentUserId, currentUserRole
 
   if (isError) {
     return (
-      <div className="rounded-xl border border-red-100 bg-red-50 p-6 text-center">
+      <div className="rounded-lg border border-red-100 bg-red-50 p-6 text-center">
         <p className="text-sm font-medium text-red-700">{(error as Error)?.message || 'Failed to load posts.'}</p>
         <button
           type="button"
@@ -74,7 +74,7 @@ export default function ProfilePosts({ profileId, currentUserId, currentUserRole
 
   if (posts.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-slate-300 p-10 text-center">
+      <div className="rounded-lg border border-dashed border-slate-300 p-10 text-center">
         <FileText className="mx-auto text-slate-300" size={28} />
         <p className="mt-3 text-sm font-medium text-slate-500">
           {isOwnProfile ? "You haven't posted anything yet." : 'No posts yet.'}

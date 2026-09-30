@@ -141,7 +141,7 @@ export default function ReactionButton({ targetType, targetId, postId, count, si
                 aria-pressed={myReaction === reaction.type}
                 title={reaction.label}
                 className={`rounded-full px-1 text-2xl leading-none transition hover:-translate-y-1 hover:scale-125 disabled:opacity-60 ${
-                  myReaction === reaction.type ? 'bg-indigo-50' : ''
+                  myReaction === reaction.type ? 'bg-brand/10' : ''
                 }`}
               >
                 {reaction.emoji}

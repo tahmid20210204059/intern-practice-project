@@ -80,7 +80,7 @@ export default function PostForm({ defaultValues, onSubmit, isSubmitting, submit
           {...register('title')}
           maxLength={150}
           placeholder="Give your post a title"
-          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
         />
         {errors.title && <p className="mt-1 text-xs text-red-600">{errors.title.message}</p>}
       </div>
@@ -91,7 +91,7 @@ export default function PostForm({ defaultValues, onSubmit, isSubmitting, submit
           rows={8}
           maxLength={5000}
           placeholder="Share something with the community..."
-          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
         />
         {errors.body && <p className="mt-1 text-xs text-red-600">{errors.body.message}</p>}
       </div>
@@ -108,7 +108,7 @@ export default function PostForm({ defaultValues, onSubmit, isSubmitting, submit
         />
         {imageUrl ? (
           <div className="relative inline-block">
-            <img src={imageUrl} alt="Post attachment" className="max-h-64 rounded-xl border border-slate-200 object-cover" />
+            <img src={imageUrl} alt="Post attachment" className="max-h-64 rounded-lg border border-slate-200 object-cover" />
             <button
               type="button"
               onClick={handleRemoveImage}
@@ -137,7 +137,7 @@ export default function PostForm({ defaultValues, onSubmit, isSubmitting, submit
         <button
           type="submit"
           disabled={isSubmitting || imageUploading}
-          className="rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-60"
+          className="rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-dark disabled:opacity-60"
         >
           {isSubmitting ? 'Saving...' : submitLabel}
         </button>

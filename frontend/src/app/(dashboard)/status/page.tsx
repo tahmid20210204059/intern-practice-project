@@ -19,7 +19,7 @@ export default function StatusPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-50 px-6">
-      <div className="w-full max-w-sm rounded-2xl bg-white p-8 text-center shadow-sm ring-1 ring-slate-100">
+      <div className="w-full max-w-sm rounded-lg bg-white p-8 text-center  ">
         <h1 className="text-xl font-bold text-slate-900">System Status</h1>
 
         {isLoading && <p className="mt-4 text-sm text-slate-500">Checking status...</p>}
@@ -32,7 +32,7 @@ export default function StatusPage() {
             <button
               onClick={() => refetch()}
               disabled={isFetching}
-              className="mt-4 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-60"
+              className="mt-4 rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-dark disabled:opacity-60"
             >
               {isFetching ? 'Retrying...' : 'Retry'}
             </button>
@@ -41,10 +41,10 @@ export default function StatusPage() {
 
         {data && (
           <div className="mt-4 space-y-2">
-            <p className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-700">API: {data.status}</p>
+            <p className="rounded-lg bg-brand/10 px-3 py-2 text-sm text-brand">API: {data.status}</p>
             <p
               className={`rounded-lg px-3 py-2 text-sm ${
-                data.database === 'connected' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'
+                data.database === 'connected' ? 'bg-brand/10 text-brand' : 'bg-slate-50 text-slate-600'
               }`}
             >
               Database: {data.database}
