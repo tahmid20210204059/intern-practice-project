@@ -2,17 +2,16 @@
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
+import { Search } from 'lucide-react';
 import { apiCall } from '@/lib/http/client';
 import { clearSession } from '@/lib/auth';
 import { FEED_QUERY_KEY, useHasNewPosts, useMarkFeedSeen } from '@/features/posts/queries/posts';
 import NotificationBell from '@/features/notifications/components/NotificationBell';
-
 interface NavbarProps {
   name: string;
   role: 'user' | 'admin';
   avatarUrl?: string;
 }
-
 export default function Navbar({ name, role, avatarUrl }: NavbarProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -20,16 +19,14 @@ export default function Navbar({ name, role, avatarUrl }: NavbarProps) {
   const dashboardHref = role === 'admin' ? '/dashboard/admin' : '/dashboard/user';
   const hasNewPosts = useHasNewPosts();
   const markFeedSeen = useMarkFeedSeen();
-
   const isDashboardActive = pathname === dashboardHref;
   const isFeedActive = pathname === '/feed';
-
+  const isSearchActive = pathname === '/search';
   const handleLogout = async () => {
     await apiCall('/auth/logout', { method: 'POST' });
     clearSession();
     router.push('/login');
   };
-
   const handleFeedNavClick = () => {
     markFeedSeen();
     queryClient.resetQueries({ queryKey: FEED_QUERY_KEY });
@@ -37,7 +34,6 @@ export default function Navbar({ name, role, avatarUrl }: NavbarProps) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
-
   return (
     <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/90 backdrop-blur">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-3.5">
@@ -63,6 +59,14 @@ export default function Navbar({ name, role, avatarUrl }: NavbarProps) {
                 className="absolute -right-2 -top-1 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white"
               />
             )}
+          </Link>
+          <Link
+            href="/search"
+            aria-label="Search"
+            className={`inline-flex items-center gap-1.5 ${isSearchActive ? 'font-semibold text-indigo-600' : 'hover:text-indigo-600'}`}
+          >
+            <Search size={16} />
+            <span className="hidden sm:inline">Search</span>
           </Link>
           <span
             className={`hidden items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium sm:inline-flex ${

@@ -1,13 +1,10 @@
 import type { PostFormValues } from './schemas/post';
-
 export type FeedSort = 'ranked' | 'latest' | 'discussed';
-
 export interface PostAuthor {
   _id: string;
   name: string;
   avatarUrl?: string;
 }
-
 export interface Post {
   _id: string;
   authorId: PostAuthor;
@@ -21,7 +18,6 @@ export interface Post {
   createdAt: string;
   updatedAt: string;
 }
-
 export interface PaginationMeta {
   page: number;
   limit: number;
@@ -30,11 +26,12 @@ export interface PaginationMeta {
   hasNextPage: boolean;
   hasPrevPage: boolean;
 }
-
 export interface FeedPage {
   items: Post[];
   pagination: PaginationMeta;
 }
-
+export interface SearchPage extends FeedPage {
+  query: string;
+}
 export type CreatePostInput = PostFormValues;
 export type UpdatePostInput = PostFormValues;

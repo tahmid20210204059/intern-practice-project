@@ -1,5 +1,4 @@
 import { getAccessToken, setAccessToken, clearSession } from '../auth';
-
 export interface ApiSuccess<T> {
   success: true;
   data: T;
@@ -11,11 +10,8 @@ export interface ApiError {
   errors: string[];
 }
 export type ApiResult<T> = ApiSuccess<T> | ApiError;
-
 const NO_REFRESH_PATHS = ['/auth/login', '/auth/signup', '/auth/refresh'];
-
 let refreshPromise: Promise<boolean> | null = null;
-
 async function refreshAccessToken(): Promise<boolean> {
   if (!refreshPromise) {
     refreshPromise = (async () => {
@@ -40,7 +36,6 @@ async function refreshAccessToken(): Promise<boolean> {
   }
   return refreshPromise;
 }
-
 export async function apiCall<T = any>(path: string, options: RequestInit = {}, allowRetry = true): Promise<ApiResult<T>> {
   const token = getAccessToken();
   try {
@@ -53,7 +48,6 @@ export async function apiCall<T = any>(path: string, options: RequestInit = {}, 
         ...options.headers,
       },
     });
-
     if (res.status === 401 && allowRetry && !NO_REFRESH_PATHS.includes(path)) {
       const refreshed = await refreshAccessToken();
       if (refreshed) {
@@ -61,13 +55,14 @@ export async function apiCall<T = any>(path: string, options: RequestInit = {}, 
       }
       clearSession();
     }
-
     return await res.json();
-  } catch {
+  } catch (error) {
+    if (options.signal?.aborted && error instanceof DOMException && error.name === 'AbortError') {
+      throw error;
+    }
     return { success: false, statusCode: 0, message: 'Network error: could not reach server', errors: [] };
   }
 }
-
 export async function apiUpload<T = any>(path: string, formData: FormData, allowRetry = true): Promise<ApiResult<T>> {
   const token = getAccessToken();
   try {
@@ -79,7 +74,6 @@ export async function apiUpload<T = any>(path: string, formData: FormData, allow
       },
       body: formData,
     });
-
     if (res.status === 401 && allowRetry) {
       const refreshed = await refreshAccessToken();
       if (refreshed) {
@@ -87,12 +81,10 @@ export async function apiUpload<T = any>(path: string, formData: FormData, allow
       }
       clearSession();
     }
-
     const json = await res.json();
     if (json?.success && json?.data && json.data.success !== undefined && json.data.data !== undefined) {
       return json.data as ApiResult<T>;
     }
-
     return json;
   } catch {
     return { success: false, statusCode: 0, message: 'Network error: could not reach server', errors: [] };
