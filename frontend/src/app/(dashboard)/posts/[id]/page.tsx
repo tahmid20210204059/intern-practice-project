@@ -8,6 +8,7 @@ import { usePost } from '@/features/posts/queries/posts';
 import Navbar from '@/components/layout/Navbar';
 import PostCard from '@/features/posts/components/PostCard';
 import PostCardSkeleton from '@/features/posts/components/PostCardSkeleton';
+import PostSummarizer from '@/features/posts/components/PostSummarizer';
 
 export default function PostDetailPage() {
   const params = useParams();
@@ -66,13 +67,16 @@ export default function PostDetailPage() {
         )}
 
         {post && (
-          <PostCard
-            post={post}
-            currentUserId={viewer._id}
-            currentUserRole={viewer.role}
-            variant="detail"
-            onDeleted={() => router.push('/feed')}
-          />
+          <>
+            <PostSummarizer key={post._id} postId={post._id} />
+            <PostCard
+              post={post}
+              currentUserId={viewer._id}
+              currentUserRole={viewer.role}
+              variant="detail"
+              onDeleted={() => router.push('/feed')}
+            />
+          </>
         )}
       </main>
     </div>

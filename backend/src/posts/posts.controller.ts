@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
 import { PostsService } from './posts.service.js';
 import { CreatePostDto } from './dto/create-post.dto.js';
@@ -31,6 +31,19 @@ export class PostsController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.postsService.findOne(id);
+  }
+  @Post(':id/summarize')
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({
+    schema: {
+      example: {
+        success: true,
+        data: { summary: 'A short summary.', tags: ['nestjs', 'backend'], source: 'model', truncated: false },
+      },
+    },
+  })
+  summarize(@Param('id') id: string) {
+    return this.postsService.summarize(id);
   }
   @Patch(':id')
   @ApiBody({ type: UpdatePostDto })

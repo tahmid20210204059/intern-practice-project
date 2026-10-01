@@ -8,11 +8,13 @@ import { PostsCleanupService } from './posts-cleanup.service.js';
 import { SearchRateLimitGuard } from './search-rate-limit.guard.js';
 import { AuthModule } from '../auth/auth.module.js';
 import { NotificationsModule } from '../notifications/notifications.module.js';
+import { SummarizerModule } from '../summarizer/summarizer.module.js';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
     AuthModule,
     NotificationsModule,
+    SummarizerModule,
   ],
   controllers: [PostsController, PostsAdminController],
   providers: [PostsService, PostsCleanupService, SearchRateLimitGuard],

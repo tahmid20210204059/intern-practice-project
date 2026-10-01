@@ -1,7 +1,21 @@
 import { useMutation, useQueryClient, type InfiniteData } from '@tanstack/react-query';
 import { apiCall } from '@/lib/http/client';
-import type { CreatePostInput, FeedPage, Post, UpdatePostInput } from '../types';
+import type { CreatePostInput, FeedPage, Post, PostSummary, UpdatePostInput } from '../types';
 import { isPostListQuery, postQueryKey } from '../queries/posts';
+import { cleanUntrustedText, parseSummaryResponse } from '../utils/untrustedText';
+
+const SUMMARIZE_REQUEST_TIMEOUT_MS = 20000;
+
+export class SummarizeError extends Error {
+  statusCode: number;
+  retryable: boolean;
+  constructor(message: string, statusCode: number) {
+    super(message);
+    this.name = 'SummarizeError';
+    this.statusCode = statusCode;
+    this.retryable = statusCode === 0 || statusCode === 408 || statusCode === 429 || statusCode >= 500;
+  }
+}
 
 export async function createPost(payload: CreatePostInput): Promise<Post> {
   const res = await apiCall<Post>('/posts', { method: 'POST', body: JSON.stringify(payload) });
@@ -19,6 +33,19 @@ export async function deletePostRequest(id: string): Promise<{ message: string }
   const res = await apiCall<{ message: string }>(`/posts/${id}`, { method: 'DELETE' });
   if (!res.success) throw new Error(res.message || 'Failed to delete post');
   return res.data;
+}
+
+export async function summarizePostRequest(id: string): Promise<PostSummary> {
+  const res = await apiCall<unknown>(`/posts/${id}/summarize`, {
+    method: 'POST',
+    signal: AbortSignal.timeout(SUMMARIZE_REQUEST_TIMEOUT_MS),
+  });
+  if (!res.success) {
+    throw new SummarizeError(cleanUntrustedText(res.message, 200) || 'Could not summarize this post.', res.statusCode);
+  }
+  const parsed = parseSummaryResponse(res.data);
+  if (!parsed) throw new SummarizeError('The summarizer returned an unreadable result. Please try again.', 502);
+  return parsed;
 }
 
 export function useCreatePost() {
@@ -68,5 +95,11 @@ export function useDeletePost() {
       });
       queryClient.removeQueries({ queryKey: postQueryKey(id) });
     },
+  });
+}
+
+export function useSummarizePost(id: string) {
+  return useMutation<PostSummary, SummarizeError, void>({
+    mutationFn: () => summarizePostRequest(id),
   });
 }

@@ -33,5 +33,11 @@ export interface FeedPage {
 export interface SearchPage extends FeedPage {
   query: string;
 }
+export interface PostSummary {
+  summary: string;
+  tags: string[];
+  source: 'mock' | 'model';
+  truncated: boolean;
+}
 export type CreatePostInput = PostFormValues;
 export type UpdatePostInput = PostFormValues;

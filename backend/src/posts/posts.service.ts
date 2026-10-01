@@ -13,6 +13,7 @@ import { UpdatePostDto } from './dto/update-post.dto.js';
 import { QueryPostsDto, PostSortOption } from './dto/query-posts.dto.js';
 import { SearchPostsDto } from './dto/search-posts.dto.js';
 import { NotificationsService } from '../notifications/notifications.service.js';
+import { SummarizerService } from '../summarizer/summarizer.service.js';
 import { buildRankScoreAggregationStage } from './ranking.js';
 import { sanitizeSearchQuery } from './search-query.js';
 const RETENTION_DAYS = 5;
@@ -33,6 +34,7 @@ export class PostsService {
   constructor(
     @InjectModel(Post.name) private postModel: Model<Post>,
     private notificationsService: NotificationsService,
+    private summarizerService: SummarizerService,
   ) {}
   private assertValidId(id: string) {
     if (!Types.ObjectId.isValid(id)) {
@@ -170,6 +172,10 @@ export class PostsService {
     const post = await this.postModel.findOne({ _id: id, deletedAt: null });
     if (!post) throw new NotFoundException('Post not found');
     return post;
+  }
+  async summarize(id: string) {
+    const post = await this.findActiveRaw(id);
+    return this.summarizerService.summarize({ title: post.title, body: post.body });
   }
   async update(id: string, userId: string, role: string, dto: UpdatePostDto) {
     const post = await this.findActiveRaw(id);
