@@ -86,6 +86,7 @@ export function getLinkValidationError(platform: LinkPlatform, value: string | u
 
 export function getPasswordError(password: string): string | null {
   if (!password) return 'Password is required.';
+  if (password.length > 72) return 'Password must be 72 characters or fewer';
   if (!PASSWORD_REGEX.test(password)) {
     return 'Password must be at least 8 characters and include an uppercase letter, a lowercase letter, and a number';
   }

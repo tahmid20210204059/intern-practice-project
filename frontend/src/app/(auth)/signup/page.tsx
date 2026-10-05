@@ -16,6 +16,7 @@ interface SignupResponseData {
 
 function friendlyServerError(message: string): string {
   const lower = message.toLowerCase();
+  if (lower.includes('too many')) return message;
   if (lower.includes('already registered')) {
     return 'This email is already registered. Please use a different email address.';
   }
@@ -163,7 +164,7 @@ export default function Signup() {
           Already have an account?{' '}
           <a href="/login" className="font-semibold text-brand hover:underline">
             Log in
-          </a>
+        </a>
         </p>
       </form>
     </div>

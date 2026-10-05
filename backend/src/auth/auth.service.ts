@@ -13,6 +13,8 @@ interface TokenPair {
   user: { id: any; name: string; email: string; role: string };
 }
 
+const DUMMY_HASH = bcrypt.hashSync('timing-equalizer-password', 10);
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -38,7 +40,10 @@ export class AuthService {
 
   async login(email: string, password: string): Promise<TokenPair> {
     const user = await this.usersService.findByEmail(email);
-    if (!user) throw new UnauthorizedException('Invalid credentials');
+    if (!user) {
+      await bcrypt.compare(password, DUMMY_HASH);
+      throw new UnauthorizedException('Invalid credentials');
+    }
     const match = await bcrypt.compare(password, user.passwordHash);
     if (!match) throw new UnauthorizedException('Invalid credentials');
     return this.issueTokenPair(user);

@@ -1,3 +1,5 @@
+export const SESSION_EXPIRED_EVENT = 'session-expired';
+
 let accessToken: string | null = null;
 
 export function setAccessToken(token: string | null) {
@@ -10,8 +12,12 @@ export function getAccessToken() {
 
 export function getStoredUser() {
   if (typeof window === 'undefined') return null;
-  const raw = localStorage.getItem('user');
-  return raw ? JSON.parse(raw) : null;
+  try {
+    const raw = localStorage.getItem('user');
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
 }
 
 export function saveUser(user: any) {
@@ -32,4 +38,13 @@ export function saveSession(token: string, user: any) {
 export function clearSession() {
   setAccessToken(null);
   clearUser();
+}
+
+export function hasSession() {
+  return !!accessToken || !!getStoredUser();
+}
+
+export function notifySessionExpired() {
+  if (typeof window === 'undefined') return;
+  window.dispatchEvent(new Event(SESSION_EXPIRED_EVENT));
 }

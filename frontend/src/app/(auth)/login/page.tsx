@@ -2,7 +2,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
 import { apiCall } from '@/lib/http/client';
@@ -16,6 +16,7 @@ interface LoginResponseData {
 
 function friendlyServerError(message: string): string {
   const lower = message.toLowerCase();
+  if (lower.includes('too many')) return message;
   if (lower.includes('credentials') || lower.includes('invalid')) {
     return 'Email or password is incorrect. Please check both fields and try again.';
   }
@@ -27,6 +28,11 @@ function friendlyServerError(message: string): string {
 export default function Login() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [sessionExpired, setSessionExpired] = useState(false);
+
+  useEffect(() => {
+    setSessionExpired(new URLSearchParams(window.location.search).get('reason') === 'expired');
+  }, []);
 
   const {
     register,
@@ -51,6 +57,7 @@ export default function Login() {
 
   const onSubmit = (values: LoginFormValues) => {
     loginMutation.reset();
+    setSessionExpired(false);
     loginMutation.mutate(values);
   };
 
@@ -67,6 +74,12 @@ export default function Login() {
       >
         <h1 className="text-xl font-bold text-slate-900">Welcome Back</h1>
         <p className="mt-1 text-sm text-slate-500">Log in to your account</p>
+
+        {sessionExpired && !serverError && (
+          <p role="status" aria-live="polite" className="mt-4 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-700">
+            Your session has expired. Please log in again to continue.
+          </p>
+        )}
 
         {serverError && (
           <p role="alert" aria-live="polite" className="mt-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">

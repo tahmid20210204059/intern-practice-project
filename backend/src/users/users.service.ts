@@ -200,6 +200,8 @@ export class UsersService {
     const isSameAsOld = await bcrypt.compare(newPassword, user.passwordHash);
     if (isSameAsOld) throw new BadRequestException('New password must be different from your current password');
     user.passwordHash = await bcrypt.hash(newPassword, 10);
+    user.refreshTokenHash = null;
+    user.refreshTokenExpiresAt = null;
     await user.save();
     return { message: 'Password updated successfully' };
   }

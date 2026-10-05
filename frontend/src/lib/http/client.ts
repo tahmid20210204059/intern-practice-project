@@ -1,4 +1,4 @@
-import { getAccessToken, setAccessToken, clearSession } from '../auth';
+import { getAccessToken, setAccessToken, clearSession, hasSession, notifySessionExpired } from '../auth';
 export interface ApiSuccess<T> {
   success: true;
   data: T;
@@ -11,7 +11,25 @@ export interface ApiError {
 }
 export type ApiResult<T> = ApiSuccess<T> | ApiError;
 const NO_REFRESH_PATHS = ['/auth/login', '/auth/signup', '/auth/refresh'];
+const REFRESH_TIMEOUT_MS = 10000;
 let refreshPromise: Promise<boolean> | null = null;
+function expireSession() {
+  const hadSession = hasSession();
+  clearSession();
+  if (hadSession) notifySessionExpired();
+}
+async function readJson<T>(res: Response): Promise<ApiResult<T>> {
+  try {
+    return await res.json();
+  } catch {
+    return {
+      success: false,
+      statusCode: res.status,
+      message: res.status === 413 ? 'The request was too large.' : 'Unexpected server response.',
+      errors: [],
+    };
+  }
+}
 async function refreshAccessToken(): Promise<boolean> {
   if (!refreshPromise) {
     refreshPromise = (async () => {
@@ -19,6 +37,7 @@ async function refreshAccessToken(): Promise<boolean> {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`, {
           method: 'POST',
           credentials: 'include',
+          signal: AbortSignal.timeout(REFRESH_TIMEOUT_MS),
         });
         if (!res.ok) return false;
         const json = await res.json();
@@ -48,14 +67,16 @@ export async function apiCall<T = any>(path: string, options: RequestInit = {}, 
         ...options.headers,
       },
     });
-    if (res.status === 401 && allowRetry && !NO_REFRESH_PATHS.includes(path)) {
-      const refreshed = await refreshAccessToken();
-      if (refreshed) {
-        return apiCall<T>(path, options, false);
+    if (res.status === 401 && !NO_REFRESH_PATHS.includes(path.split('?')[0])) {
+      if (allowRetry) {
+        const refreshed = await refreshAccessToken();
+        if (refreshed) {
+          return apiCall<T>(path, options, false);
+        }
       }
-      clearSession();
+      expireSession();
     }
-    return await res.json();
+    return await readJson<T>(res);
   } catch (error) {
     if (options.signal?.aborted && error instanceof DOMException && error.name === 'AbortError') {
       throw error;
@@ -74,14 +95,16 @@ export async function apiUpload<T = any>(path: string, formData: FormData, allow
       },
       body: formData,
     });
-    if (res.status === 401 && allowRetry) {
-      const refreshed = await refreshAccessToken();
-      if (refreshed) {
-        return apiUpload<T>(path, formData, false);
+    if (res.status === 401) {
+      if (allowRetry) {
+        const refreshed = await refreshAccessToken();
+        if (refreshed) {
+          return apiUpload<T>(path, formData, false);
+        }
       }
-      clearSession();
+      expireSession();
     }
-    const json = await res.json();
+    const json: any = await readJson<T>(res);
     if (json?.success && json?.data && json.data.success !== undefined && json.data.data !== undefined) {
       return json.data as ApiResult<T>;
     }

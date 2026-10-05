@@ -12,13 +12,6 @@ export class UploadsService {
     const apiKey = this.configService.get<string>('CLOUDINARY_API_KEY')?.trim();
     const apiSecret = this.configService.get<string>('CLOUDINARY_API_SECRET')?.trim();
 
-    console.log('Cloudinary configuration:', {
-      cloudinaryUrl: cloudinaryUrl ? '***' : null,
-      cloudName: cloudName ? '***' : null,
-      apiKey: apiKey ? '***' : null,
-      apiSecret: apiSecret ? '***' : null,
-    });
-
     const hasUrlConfig = Boolean(cloudinaryUrl);
     const hasExplicitCredentials = Boolean(cloudName && apiKey && apiSecret);
 
@@ -56,7 +49,7 @@ export class UploadsService {
       return result.secure_url;
     } catch (err) {
       const error = err as UploadApiErrorResponse;
-      console.error('Cloudinary upload error:', JSON.stringify({ message: error?.message, http_code: error?.http_code, error: error?.error }, null, 2));
+      console.error('Cloudinary upload error:', error?.http_code ?? 'unknown');
       throw new BadRequestException(
         error?.message || `Cloudinary upload failed with status ${error?.http_code || 'unknown'}`,
       );

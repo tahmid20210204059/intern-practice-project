@@ -18,5 +18,6 @@ export class UpdateUserProfileDto {
 
   @IsOptional()
   @IsString()
+  @MaxLength(2048, { message: 'Avatar URL must be 2048 characters or fewer' })
   avatarUrl?: string;
 }

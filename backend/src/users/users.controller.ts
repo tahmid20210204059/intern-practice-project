@@ -4,6 +4,8 @@ import { UsersService } from './users.service.js';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
 import { RolesGuard } from '../auth/roles.guard.js';
 import { Roles } from '../auth/roles.decorator.js';
+import { RateLimit } from '../common/rate-limit/rate-limit.decorator.js';
+import { RateLimitGuard } from '../common/rate-limit/rate-limit.guard.js';
 import { ChangePasswordDto } from './dto/change-password.dto.js';
 import { UpdateEducationDto } from './dto/update-education.dto.js';
 import { UpdateExperiencesDto } from './dto/update-experiences.dto.js';
@@ -101,7 +103,8 @@ export class UsersController {
   }
 
   @Patch('me/password')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RateLimitGuard)
+  @RateLimit({ name: 'change-password', limit: 5, windowMs: 15 * 60 * 1000, by: 'user', message: 'Too many password change attempts. Please try again later.' })
   @ApiBody({
     schema: {
       properties: {

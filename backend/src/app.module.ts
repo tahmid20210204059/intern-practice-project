@@ -10,12 +10,14 @@ import { PostsModule } from './posts/posts.module.js';
 import { UploadsModule } from './uploads/uploads.module.js';
 import { CommentsModule } from './comments/comments.module.js';
 import { ReactionsModule } from './reactions/reactions.module.js';
+import { validateEnv } from './common/config/env.validation.js';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env', 'backend/.env', '../backend/.env'],
+      validate: validateEnv,
     }),
     MongooseModule.forRoot(process.env.MONGO_URI as string),
     ScheduleModule.forRoot(),

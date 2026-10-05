@@ -197,7 +197,8 @@ describe('auth flow with a protected action (integration)', () => {
 
     const refreshed = await http().post('/auth/refresh').set('Cookie', oldCookie).expect(201);
     expect(refreshed.body.data.access_token).toBeDefined();
-    expect(refreshed.body.data.refresh_token).not.toBe(first.body.data.refresh_token);
+    expect(refreshed.body.data.refresh_token).toBeUndefined();
+    expect(cookieOf(refreshed)).not.toBe(oldCookie);
 
     const reused = await http().post('/auth/refresh').set('Cookie', oldCookie).expect(401);
     expect(reused.body.message).toBe('Invalid refresh token');
@@ -210,5 +211,15 @@ describe('auth flow with a protected action (integration)', () => {
     const cookie = cookieOf(first);
     await http().post('/auth/logout').set('Cookie', cookie).expect(201);
     await http().post('/auth/refresh').set('Cookie', cookie).expect(401);
+  });
+
+  it('rate limits repeated login attempts with 429 and Retry-After', async () => {
+    await signup().expect(201);
+    for (let i = 0; i < 10; i++) {
+      await http().post('/auth/login').send({ email: 'ada@example.com', password: 'WrongPass1' }).expect(401);
+    }
+    const limited = await http().post('/auth/login').send({ email: 'ada@example.com', password: 'WrongPass1' }).expect(429);
+    expect(limited.body).toMatchObject({ success: false, statusCode: 429 });
+    expect(limited.headers['retry-after']).toBeDefined();
   });
 });

@@ -34,6 +34,7 @@ export default function Navbar({ name, role, avatarUrl }: NavbarProps) {
   const handleLogout = async () => {
     await apiCall('/auth/logout', { method: 'POST' });
     clearSession();
+    queryClient.clear();
     router.push('/login');
   };
   const handleFeedNavClick = () => {
@@ -71,13 +72,13 @@ export default function Navbar({ name, role, avatarUrl }: NavbarProps) {
           <NotificationBell />
           <div ref={menuRef} className="relative">
             <button type="button" onClick={() => setOpen((value) => !value)} aria-label="Open profile menu" className="flex items-center">
-            {avatarUrl ? (
-              <img src={avatarUrl} alt={name} className="h-8 w-8 rounded-full object-cover ring-2 ring-white" />
-            ) : (
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand text-xs font-semibold text-white">
-                {name.charAt(0).toUpperCase()}
-              </span>
-            )}
+              {avatarUrl ? (
+                <img src={avatarUrl} alt={name} className="h-8 w-8 rounded-full object-cover ring-2 ring-white" />
+              ) : (
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand text-xs font-semibold text-white">
+                  {name.charAt(0).toUpperCase()}
+                </span>
+              )}
             </button>
             {open && <div className="absolute right-0 mt-2 w-48 rounded-lg border border-slate-200 bg-white shadow-lg">
               <Link href="/profile/me" onClick={() => setOpen(false)} className="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900">Profile</Link>

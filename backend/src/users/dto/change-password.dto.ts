@@ -1,6 +1,7 @@
 import {
   IsNotEmpty,
   IsString,
+  MaxLength,
   ValidationArguments,
   ValidationOptions,
   registerDecorator,
@@ -31,10 +32,12 @@ function IsSameAsPassword(
 export class ChangePasswordDto {
   @IsNotEmpty({ message: 'Current password is required' })
   @IsString()
+  @MaxLength(128)
   currentPassword: string;
 
   @IsNotEmpty({ message: 'New password is required' })
   @IsString()
+  @MaxLength(72, { message: 'Password must be 72 characters or fewer' })
   newPassword: string;
 
   @IsNotEmpty({ message: 'Confirm password is required' })

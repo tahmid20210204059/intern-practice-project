@@ -37,6 +37,7 @@ import {
   stripCodeFences,
   stripPostDelimiters,
 } from './summarizer.utils.js';
+import { redactSensitive as redactLogText } from '../common/logging/redact.js';
 @Injectable()
 export class SummarizerService {
   private readonly logger = new Logger(SummarizerService.name);
@@ -119,7 +120,7 @@ export class SummarizerService {
       if (err instanceof Error && (err.name === 'AbortError' || err.name === 'TimeoutError')) {
         throw new GatewayTimeoutException(TIMEOUT_MESSAGE);
       }
-      this.logger.warn(`Summarizer request failed: ${err instanceof Error ? err.message : 'unknown error'}`);
+      this.logger.warn(`Summarizer request failed: ${err instanceof Error ? redactLogText(err.message, 200) : 'unknown error'}`);
       throw new ServiceUnavailableException(UNAVAILABLE_MESSAGE);
     } finally {
       clearTimeout(timer);
@@ -136,7 +137,7 @@ export class SummarizerService {
     try {
       const text = await res.text();
       const message = JSON.parse(text)?.error?.message;
-      return (typeof message === 'string' ? message : text).slice(0, 200);
+      return redactLogText(typeof message === 'string' ? message : text, 200);
     } catch {
       return '';
     }
