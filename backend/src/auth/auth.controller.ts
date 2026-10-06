@@ -46,10 +46,14 @@ export class AuthController {
 
   private cookieOptions(expiresAt?: Date) {
     const isProd = process.env.NODE_ENV === 'production';
+    const secureOverride = process.env.COOKIE_SECURE?.trim().toLowerCase();
+    const secure = secureOverride === 'true' ? true : secureOverride === 'false' ? false : isProd;
+    const sameSiteOverride = process.env.COOKIE_SAMESITE?.trim().toLowerCase();
+    const sameSite = (['lax', 'strict', 'none'].includes(sameSiteOverride ?? '') ? sameSiteOverride : isProd ? 'none' : 'lax') as 'none' | 'lax' | 'strict';
     return {
       httpOnly: true,
-      secure: isProd,
-      sameSite: (isProd ? 'none' : 'lax') as 'none' | 'lax',
+      secure,
+      sameSite,
       path: REFRESH_COOKIE_PATH,
       ...(expiresAt ? { expires: expiresAt } : {}),
     };
