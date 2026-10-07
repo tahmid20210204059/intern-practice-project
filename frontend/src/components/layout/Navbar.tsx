@@ -46,11 +46,11 @@ export default function Navbar({ name, role, avatarUrl }: NavbarProps) {
   };
   return (
     <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/90 backdrop-blur">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-3.5">
-        <Link href={dashboardHref} className="text-base font-bold tracking-tight text-slate-900">
+      <div className="mx-auto flex max-w-5xl items-center justify-between gap-2 px-3 py-3.5 sm:px-6">
+        <Link href={dashboardHref} className="shrink-0 text-sm font-bold tracking-tight text-slate-900 sm:text-base">
           Dev<span className="text-brand">Community</span>
         </Link>
-        <nav className="absolute left-1/2 flex -translate-x-1/2 items-center gap-4">
+        <nav className="flex items-center gap-1 sm:absolute sm:left-1/2 sm:-translate-x-1/2 sm:gap-4">
           <Link
             href="/feed"
             onClick={handleFeedNavClick}
@@ -68,7 +68,7 @@ export default function Navbar({ name, role, avatarUrl }: NavbarProps) {
             <Search size={18} />
           </Link>
         </nav>
-        <div className="flex items-center gap-3">
+        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           <NotificationBell />
           <div ref={menuRef} className="relative">
             <button type="button" onClick={() => setOpen((value) => !value)} aria-label="Open profile menu" className="flex items-center">

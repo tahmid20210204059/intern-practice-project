@@ -55,6 +55,7 @@ export default function NotificationBell() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- initial fetch of the unread badge, then polled
     loadUnreadCount();
     const interval = setInterval(loadUnreadCount, UNREAD_COUNT_POLL_MS);
     return () => clearInterval(interval);

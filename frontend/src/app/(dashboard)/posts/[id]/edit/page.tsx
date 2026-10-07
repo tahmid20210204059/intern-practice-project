@@ -75,7 +75,7 @@ export default function EditPostPage() {
       <div className="min-h-screen bg-white">
         <Navbar name={viewer.name} role={viewer.role} avatarUrl={viewer.avatarUrl} />
         <main className="mx-auto max-w-3xl px-4 py-8 text-center sm:px-6">
-          <p className="text-sm font-medium text-red-600">You don't have permission to edit this post.</p>
+          <p className="text-sm font-medium text-red-600">You don&apos;t have permission to edit this post.</p>
           <Link href={`/posts/${id}`} className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-brand hover:underline">
             <ArrowLeft size={15} />
             Back to post

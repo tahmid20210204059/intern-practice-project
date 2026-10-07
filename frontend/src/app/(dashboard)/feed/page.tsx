@@ -174,7 +174,7 @@ function FeedContent() {
         )}
 
         {!isLoading && !isError && posts.length > 0 && !hasNextPage && (
-          <p className="mt-6 text-center text-sm text-slate-400">You've reached the end of the feed.</p>
+          <p className="mt-6 text-center text-sm text-slate-400">You&apos;ve reached the end of the feed.</p>
         )}
       </main>
     </div>

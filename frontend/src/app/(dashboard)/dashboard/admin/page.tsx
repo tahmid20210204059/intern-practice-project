@@ -13,7 +13,12 @@ export default function AdminDashboard() {
 
   const loadUsers = async () => {
     const res = await apiCall('/users');
-    if (res.success) setUsers(res.data);
+    if (res.success) {
+      setUsers(res.data);
+      return true;
+    }
+    setActionMsg({ type: 'error', text: res.message || 'Failed to load users.' });
+    return false;
   };
 
   useEffect(() => {
@@ -60,7 +65,7 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-white">
       <Navbar name={profile.name} role={profile.role} avatarUrl={profile.avatarUrl} />
 
-      <main className="mx-auto max-w-5xl px-6 py-10">
+      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-10">
         <h1 className="text-xl font-bold text-slate-900">Admin Panel</h1>
         <p className="mt-1 text-sm text-slate-500">Manage community members and their roles.</p>
 
@@ -74,8 +79,8 @@ export default function AdminDashboard() {
           </p>
         )}
 
-        <div className="mt-6 overflow-hidden rounded-lg border border-slate-200 bg-white">
-          <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
+        <div className="mt-6 overflow-x-auto rounded-lg border border-slate-200 bg-white">
+          <div className="flex items-center justify-between border-b border-slate-100 px-4 py-4 sm:px-6">
             <h2 className="font-semibold text-slate-900">All Users</h2>
             <span className="text-sm text-slate-500">{users.length} total</span>
           </div>
@@ -83,13 +88,13 @@ export default function AdminDashboard() {
           {users.length === 0 ? (
             <p className="px-6 py-8 text-center text-sm text-slate-400">No users found.</p>
           ) : (
-            <table className="w-full text-left text-sm">
+            <table className="w-full min-w-[32rem] text-left text-sm">
               <thead>
                 <tr className="border-b border-slate-100 text-xs font-medium uppercase text-slate-400">
-                  <th className="px-6 py-3">Name</th>
-                  <th className="px-6 py-3">Email</th>
-                  <th className="px-6 py-3">Role</th>
-                  <th className="px-6 py-3">Action</th>
+                  <th className="px-3 py-3 sm:px-6">Name</th>
+                  <th className="px-3 py-3 sm:px-6">Email</th>
+                  <th className="px-3 py-3 sm:px-6">Role</th>
+                  <th className="px-3 py-3 sm:px-6">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -99,16 +104,16 @@ export default function AdminDashboard() {
                     onClick={() => router.push(`/profile/${u._id}`)}
                     className="cursor-pointer border-b border-slate-50 last:border-0 hover:bg-slate-50/60"
                   >
-                    <td className="px-6 py-3 font-medium text-slate-900">{u.name}</td>
-                    <td className="px-6 py-3 text-slate-600">{u.email}</td>
-                    <td className="px-6 py-3">
+                    <td className="px-3 py-3 sm:px-6 font-medium text-slate-900">{u.name}</td>
+                    <td className="px-3 py-3 sm:px-6 text-slate-600">{u.email}</td>
+                    <td className="px-3 py-3 sm:px-6">
                       <span
                         className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-xs font-medium text-slate-600"
                       >
                         {u.role}
                       </span>
                     </td>
-                    <td className="px-6 py-3">
+                    <td className="px-3 py-3 sm:px-6">
                       {u.role === 'admin' ? (
                         <button
                           onClick={(e) => {

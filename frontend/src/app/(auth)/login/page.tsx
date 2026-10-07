@@ -31,6 +31,7 @@ export default function Login() {
   const [sessionExpired, setSessionExpired] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- read the query string after hydration to avoid an SSR mismatch
     setSessionExpired(new URLSearchParams(window.location.search).get('reason') === 'expired');
   }, []);
 
@@ -138,7 +139,7 @@ export default function Login() {
         </button>
 
         <p className="mt-5 text-center text-sm text-slate-500">
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <a href="/signup" className="font-semibold text-brand hover:underline">
             Sign up
           </a>
