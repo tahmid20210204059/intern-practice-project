@@ -10,6 +10,7 @@ import { PostsModule } from './posts/posts.module.js';
 import { UploadsModule } from './uploads/uploads.module.js';
 import { CommentsModule } from './comments/comments.module.js';
 import { ReactionsModule } from './reactions/reactions.module.js';
+import { ChangelogModule } from './changelog/changelog.module.js';
 import { validateEnv } from './common/config/env.validation.js';
 
 @Module({
@@ -27,6 +28,7 @@ import { validateEnv } from './common/config/env.validation.js';
     UploadsModule,
     CommentsModule,
     ReactionsModule,
+    ChangelogModule,
   ],
   controllers: [AppController],
   providers: [AppService],

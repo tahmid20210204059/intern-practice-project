@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
-import { Home, Search } from 'lucide-react';
+import { Home, ScrollText, Search } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { apiCall } from '@/lib/http/client';
 import { clearSession } from '@/lib/auth';
@@ -24,6 +24,7 @@ export default function Navbar({ name, role, avatarUrl }: NavbarProps) {
   const markFeedSeen = useMarkFeedSeen();
   const isFeedActive = pathname === '/feed';
   const isSearchActive = pathname === '/search';
+  const isChangelogActive = pathname === '/changelog';
   useEffect(() => {
     const handleMouseDown = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) setOpen(false);
@@ -66,6 +67,13 @@ export default function Navbar({ name, role, avatarUrl }: NavbarProps) {
             className={`inline-flex border-b-2 p-2 ${isSearchActive ? 'border-brand text-brand' : 'border-transparent text-slate-500 hover:text-slate-900'}`}
           >
             <Search size={18} />
+          </Link>
+          <Link
+            href="/changelog"
+            aria-label="Changelog"
+            className={`inline-flex border-b-2 p-2 ${isChangelogActive ? 'border-brand text-brand' : 'border-transparent text-slate-500 hover:text-slate-900'}`}
+          >
+            <ScrollText size={18} />
           </Link>
         </nav>
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
